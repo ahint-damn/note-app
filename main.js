@@ -59,10 +59,10 @@ ipcMain.on('window-control', (event, arg) => {
   }
 });
 
+
 //Get Note Directory
 ipcMain.on('get-notes-dir', (event) => {
   event.sender.send('get-notes-dir-response', notesDir);
-  console.log(`Notes directory sent to renderer: ${notesDir}`);
 });
 
 // Handle save-note event
@@ -77,4 +77,12 @@ ipcMain.on('read-note', (event, filename) => {
   const filePath = path.join(notesDir, filename);
   const content = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf-8') : null;
   event.sender.send('read-note-response', content);
+});
+
+// Get Complete Directory, including subdirectories
+ipcMain.on('get-files', (event) => {
+  console.log('get-files');
+  const files = fs.readdirSync(notesDir, { recursive: true });
+  console.log(files);
+  event.sender.send('get-files-response', files);
 });

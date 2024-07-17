@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -14,6 +13,18 @@ export class NotesService {
   checkIfElectron = (): boolean => {
     return this.isElectron();
   };
+
+  getFiles(): Promise<string[]> {
+    return new Promise((resolve) => {
+      if (this.isElectron()) {
+        window.electron.getFiles().then(files => {
+          resolve(files);
+        });
+      } else {
+        resolve([]);
+      }
+    });
+  }
 
   // Save a note
   saveNote = (filename: string, content: string): void => {

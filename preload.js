@@ -14,5 +14,9 @@ contextBridge.exposeInMainWorld('electron', {
   checkElectron: () => new Promise((resolve) => {
     ipcRenderer.once('check-electron-response', (event, data) => resolve(data));
     ipcRenderer.send('check-electron');
+  }),
+  getFiles: () => new Promise((resolve) => {
+    ipcRenderer.once('get-files-response', (event, data) => resolve(data));
+    ipcRenderer.send('get-files');
   })
 });

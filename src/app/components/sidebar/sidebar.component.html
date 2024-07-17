@@ -1,6 +1,15 @@
 <div class="sidebar-wrapper" appResizable="right">
     <div class="inset-wrapper">
-        <button><i class="bi bi-folder-fill"></i></button>
+      <button><i class="bi bi-folder-fill"></i></button>
     </div>
-    <div class="sidebar-content"></div>
-</div>
+    <div class="sidebar-content">
+      <div class="action-buttons">
+        <button><i class="bi bi-folder-plus"></i></button>
+        <button><i class="bi bi-file-earmark-plus"></i></button>
+      </div>
+      <div class="sidebar-list">
+        <app-file-tree [fileNodes]="fileNodes"></app-file-tree>
+      </div>
+    </div>
+  </div>
+  

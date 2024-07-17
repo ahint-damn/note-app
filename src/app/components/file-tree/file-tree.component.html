@@ -1,0 +1,9 @@
+<ul>
+    <li *ngFor="let node of fileNodes">
+      {{ node.name }}
+      <ul *ngIf="node.children?.length">
+        <app-file-tree [fileNodes]="node.children!"></app-file-tree>
+      </ul>
+    </li>
+  </ul>
+  

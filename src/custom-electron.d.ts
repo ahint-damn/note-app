@@ -3,6 +3,7 @@ interface ElectronAPI {
   saveNote(filename: string, content: string): void;
   readNote(filename: string): Promise<string | null>;
   getNotesDir(): Promise<string | null>;
+  getFiles(): Promise<string[]>;
 }
 
 interface Window {

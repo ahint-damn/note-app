@@ -23,9 +23,8 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     if (this.notesService.checkIfElectron()) {
       this.toastsService.show({title:'Development', duration:3, type: 'success', message: 'Running in Electron'});
-      this.notesService.getNotesDir().then(dir => {
-        alert(dir);
-      });
+      this.notesService.getNotesDir();
+      // this.notesService.saveNote('test', 'Hello World');
     }
     else{
       this.toastsService.show({title:'Development', duration:3, type: 'success', message: 'Running in Browser'});
