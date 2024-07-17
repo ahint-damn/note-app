@@ -1,0 +1,12 @@
+<div class="toast-wrapper" *ngIf="toast" [ngClass]="{ 
+        'success': toast?.type == 'success', 
+        'error': toast?.type == 'error',
+        'info': toast?.type == 'info',
+    }" #toastId>
+    <div class="toast-header">
+        <h4>{{ toast?.title }}</h4>
+    </div>
+    <div class="toast-body">
+        <p>{{ toast?.message }}</p>
+    </div>
+</div>

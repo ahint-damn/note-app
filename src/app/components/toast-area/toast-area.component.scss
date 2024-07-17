@@ -1,0 +1,10 @@
+.toast-area-wrapper{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    z-index: 9999;
+    padding:10px;
+}

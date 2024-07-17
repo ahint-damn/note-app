@@ -1,0 +1,28 @@
+@import '../../../vars.scss';
+
+.toast-wrapper{
+    display:flex;
+    flex-direction: column;
+    gap:5px;
+    border-radius: 5px;
+    padding:10px 15px;
+    color:#fff;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,0.3);
+    transition: opacity 0.5s;
+}
+
+.success{
+    background-color:  $error-color;
+}
+
+.error{
+    background-color:  $success-color;
+}
+
+.info{
+    background-color:  $info-color;
+}
+
+.fade-out{
+    opacity: 0;
+}

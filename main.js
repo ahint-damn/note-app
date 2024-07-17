@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
+const fs = require('fs');
 const path = require('path');
 
 let mainWindow;
@@ -12,8 +13,8 @@ function createWindow() {
     frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: true,
-      contextIsolation: true, // Set this to true
+      nodeIntegration: false, // Best practice to set nodeIntegration to false for security
+      contextIsolation: true,
     },
   });
 
@@ -38,6 +39,15 @@ app.on('activate', function () {
   }
 });
 
+// Directory for storing notes
+const notesDir = path.join(app.getPath('documents'), 'Notes');
+
+if (!fs.existsSync(notesDir)) {
+  fs.mkdirSync(notesDir);
+}
+console.log(`Notes directory: ${notesDir}`);
+
+// Handle window control events
 ipcMain.on('window-control', (event, arg) => {
   switch (arg) {
     case 'minimize':
@@ -47,4 +57,24 @@ ipcMain.on('window-control', (event, arg) => {
       mainWindow.close();
       break;
   }
+});
+
+//Get Note Directory
+ipcMain.on('get-notes-dir', (event) => {
+  event.sender.send('get-notes-dir-response', notesDir);
+  console.log(`Notes directory sent to renderer: ${notesDir}`);
+});
+
+// Handle save-note event
+ipcMain.on('save-note', (event, { filename, content }) => {
+  const filePath = path.join(notesDir, filename + ".txt");
+  fs.writeFileSync(filePath, content, 'utf-8');
+  console.log(`Note saved to ${filePath}`);
+});
+
+// Handle read-note event
+ipcMain.on('read-note', (event, filename) => {
+  const filePath = path.join(notesDir, filename);
+  const content = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf-8') : null;
+  event.sender.send('read-note-response', content);
 });
