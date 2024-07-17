@@ -3,6 +3,7 @@ body{
     background-color: $background-color;
     font-family: 'Roboto', sans-serif;
     margin: 0;
+    color: $text-color;
     padding: 0;
     box-sizing: border-box;
 }
@@ -17,4 +18,13 @@ button{
     cursor: pointer;
     padding:0;
     margin:0;
+    background-color: transparent;
+    color: $text-color;
+    transition: all 0.3s;
+    i{
+        font-size: 20px;
+    }
+    &:hover{
+        color: $button-hover-color;
+    }
 }
