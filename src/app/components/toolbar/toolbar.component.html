@@ -1,4 +1,10 @@
+<!--TODO: Platform specific Buttons-->
 <div class="toolbar">
-    <button (click)="minimize()">Minimize</button>
-    <button (click)="close()">Close</button>
+    <div class="drag-region">
+        <div class="buttons">
+            <button (click)="close()" class="close-btn"></button>
+            <button (click)="minimize()" class="minimise-btn"></button>
+            <button (click)="maximize()" class="maximise-btn"></button>
+        </div>
+    </div>
 </div>

@@ -15,5 +15,9 @@ export class ToolbarComponent {
   close() {
     (window as any).electron.windowControl('close');
   }
+
+  maximize() {
+    (window as any).electron.windowControl('maximize');
+  }
 }
 

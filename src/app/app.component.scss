@@ -1,0 +1,7 @@
+@import '../vars.scss';
+.app-wrapper{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: $background-color;
+}
