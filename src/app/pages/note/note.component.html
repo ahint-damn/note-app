@@ -8,7 +8,7 @@
              [innerHTML]="line.selected ? line.raw : line.rendered" 
              contenteditable="true" 
              (focus)="selectLine(i)" 
-             (input)="updateLineContent($event, i)">
+             (blur)="updateLineContent($event, i)">
         </div>
       </div>
     </div>
