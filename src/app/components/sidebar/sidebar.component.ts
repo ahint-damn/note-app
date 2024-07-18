@@ -15,6 +15,10 @@ import { FileNode, buildFileTree } from '../../utils/file.utils';
 export class SidebarComponent {
   fileNodes: FileNode[] = [];
 
+  minimise(){
+    this.noteService.resetFileTree();
+  }
+
   createFolder() {
     if (this.noteService.getCreatingFolder()){ 
       return;

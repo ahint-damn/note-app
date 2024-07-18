@@ -21,8 +21,10 @@ export class NavigationService {
   }
 
   public addTab(tab: NavigationTab) {
-    if (this.tabs.find(t => t.noteId === tab.noteId)) {
-      this.setActiveTabId(this.tabs.findIndex(t => t.noteId === tab.noteId));
+    //if tab with same route already exists, set it as active
+    const existingTab = this.tabs.find(t => t.path === tab.path);
+    if (existingTab) {
+      this.setActiveTabId(existingTab.Id);
       return;
     }
     tab.Id = this.tabs.length;

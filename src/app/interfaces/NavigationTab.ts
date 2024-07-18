@@ -5,4 +5,5 @@ export interface NavigationTab {
   title: string;
   path: string;
   noteId?: string;
+  icon?: string;
 }

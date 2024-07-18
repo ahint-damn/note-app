@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef, AfterViewInit, ViewChild, viewChild, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NotesService } from '../../services/notes.service';
@@ -25,8 +25,13 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
   noteId: string = '';
   lines: Line[] = [];
   routeSub!: Subscription;
+  wordCount: number = 0;
+  charCount: number = 0;
+  @ViewChild('stats') stats!: ElementRef;
+  @ViewChild('noteArea') noteArea!: ElementRef;
 
   constructor(private router: Router, private route: ActivatedRoute, private notesService: NotesService) {}
+
 
   ngOnInit(): void {
     this.routeSub = this.route.params.subscribe(params => {
@@ -35,7 +40,46 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngAfterViewInit() {}
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.centerStats();
+  }
+
+  updateStats(){
+    this.getWordCount();
+    this.getCharCount();
+  }
+
+  centerStats(){
+    this.stats.nativeElement.style.width = this.noteArea.nativeElement.offsetWidth + 'px';
+    this.updateStats();
+  }
+
+  ngAfterViewInit() {
+    this.centerStats();
+  }
+
+  getWordCount() {
+    this.wordCount = this.getCleanText().split(/\s+/).filter((word: string | any[]) => word.length > 0).length;
+    return this.wordCount;
+  }
+
+  getCleanText(){
+    var fullText = this.lines.map(line => line.raw).join(' ');
+    fullText = fullText.replace(/(\*\*|__)(.*?)\1/g, '$2');
+    fullText = fullText.replace(/(\*|_)(.*?)\1/g, '$2');
+    fullText = fullText.replace(/(`{1,3})(.*?)\1/g, '$2');
+    fullText = fullText.replace(/(\~\~)(.*?)\1/g, '$2');
+    fullText = fullText.replace(/(\[.*?\])(\(.*?\))/g, '$1');
+    fullText = fullText.replace(/(#{1,6})(.*?)(\n|$)/g, '$2');
+    fullText = fullText.replace(/(\n)/g, ' ');
+    return fullText;
+  }
+
+  getCharCount() {
+    this.charCount = this.getCleanText().replace(/\s/g, '').length;
+    return this.charCount;
+  }
 
   ngOnDestroy(): void {
     this.routeSub?.unsubscribe();
@@ -48,12 +92,16 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
       rendered: this.syncMarkdownToHtml(line),
       selected: false
     }));
+    this.updateStats();
   }
-
+  
   updateRawContent(event: any, index: number) {
     if (index >= 0 && index < this.lines.length) {
       this.lines[index].raw = event.target.innerText;
+      console.log(this.lines[index].raw);
+      console.log(this.lines);
     }
+   this.updateStats();
   }
 
   async updateLineContent(target: any, index: number) {

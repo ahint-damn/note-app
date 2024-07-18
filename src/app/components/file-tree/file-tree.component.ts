@@ -115,6 +115,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
     const path = `${this.getFullPath(node)}.txt`;
     this.notes.saveNoteByPath(path, '');
     this.notes.resetFileTree();
+    this.toasts.show({title: 'Success', duration: 3, type: 'success', message: 'File created'});
   }
 
   cancelFileEdit(node: FileNode) {

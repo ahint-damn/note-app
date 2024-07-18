@@ -57,6 +57,10 @@
         &:hover{
             background-color: $light-background-color;
         }
+        .icon{
+            width: 16px;
+            height: 16px;
+        }
     }
     .active{
         margin-bottom: -1px;

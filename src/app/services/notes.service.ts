@@ -115,10 +115,10 @@ export class NotesService {
     if (this.isElectron()) {
       try{
         window.electron.saveNoteByPath(path, content);
-        this.toasts.show({title: 'Success', duration: 3, type: 'success', message: 'File created'});
+        // this.toasts.show({title: 'Success', duration: 3, type: 'success', message: 'File created'});
       }
       catch{
-        this.toasts.show({title: 'Error', duration: 3, type: 'error', message: 'Error creating file'});
+        this.toasts.show({title: 'Error', duration: 3, type: 'error', message: 'Error saving / creating file'});
       }
 
     }

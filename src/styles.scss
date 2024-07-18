@@ -1,7 +1,7 @@
 @import './vars.scss'; 
 body{
     background-color: $background-color;
-    font-family: 'Roboto', sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: 0;
     color: $text-color;
     padding: 0;
@@ -10,6 +10,7 @@ body{
 
 h1, h2, h3, h4, h5, h6, p, a {
     margin: 0;
+    font-weight: 400;
 }
 
 button{
