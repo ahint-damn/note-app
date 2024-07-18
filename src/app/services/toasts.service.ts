@@ -10,7 +10,6 @@ export class ToastsService {
   toasts$ = this.toastsSource.asObservable();
 
   constructor() {
-    console.log('ToastsService created');
   }
 
   getToasts() {

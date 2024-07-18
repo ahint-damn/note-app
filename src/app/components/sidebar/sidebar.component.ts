@@ -16,13 +16,8 @@ export class SidebarComponent {
   fileNodes: FileNode[] = [];
 
   constructor(private noteService: NotesService) {
-    this.noteService.getFiles().then((files: string[]) => {
-      if (files) {
-        this.fileNodes = buildFileTree(files);
-        console.log(this.fileNodes); // For debugging
-      }
-    }).catch(error => {
-      console.error('Error fetching files', error);
+    this.noteService.fileNodes$.subscribe((fileNodes) => {
+      this.fileNodes = fileNodes;
     });
   }
 }

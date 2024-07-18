@@ -45,7 +45,7 @@ const notesDir = path.join(app.getPath('documents'), 'Notes');
 if (!fs.existsSync(notesDir)) {
   fs.mkdirSync(notesDir);
 }
-console.log(`Notes directory: ${notesDir}`);
+console.log(`[i] notes directory: ${notesDir}`);
 
 // Handle window control events
 ipcMain.on('window-control', (event, arg) => {
@@ -65,24 +65,23 @@ ipcMain.on('get-notes-dir', (event) => {
   event.sender.send('get-notes-dir-response', notesDir);
 });
 
-// Handle save-note event
-ipcMain.on('save-note', (event, { filename, content }) => {
-  const filePath = path.join(notesDir, filename + ".txt");
-  fs.writeFileSync(filePath, content, 'utf-8');
-  console.log(`Note saved to ${filePath}`);
-});
-
-// Handle read-note event
-ipcMain.on('read-note', (event, filename) => {
-  const filePath = path.join(notesDir, filename);
-  const content = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf-8') : null;
-  event.sender.send('read-note-response', content);
-});
 
 // Get Complete Directory, including subdirectories
 ipcMain.on('get-files', (event) => {
-  console.log('get-files');
-  const files = fs.readdirSync(notesDir, { recursive: true });
-  console.log(files);
+  var files = fs.readdirSync(notesDir, { recursive: true });
   event.sender.send('get-files-response', files);
+});
+
+//read notes by path
+ipcMain.on('read-note-by-path', (event, arg) => {
+  const notePath = path.join(notesDir, arg);
+  const note = fs.readFileSync(notePath, 'utf-8');
+  event.sender.send('read-note-by-path-response', note);
+});
+
+//save notes by path
+ipcMain.on('save-note-by-path', (event, arg) => {
+  const notePath = path.join(notesDir, arg.path);
+  fs.writeFileSync(notePath, arg.content);
+  event.sender.send('save-note-by-path-response');
 });

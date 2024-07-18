@@ -1,7 +1,10 @@
 <ul>
     <li *ngFor="let node of fileNodes">
-      {{ node.name }}
-      <ul *ngIf="node.children?.length">
+      <div class="area" (click)="clicked(node)" [ngClass]="{'offset': node.extension}" *ngIf="!(node.name === '.DS_Store')">
+        <img [src]="'icons/' + node.icon + '.svg'" class="icon" *ngIf="!node.extension" />
+        <p>{{ node.name }}</p>
+      </div>
+      <ul *ngIf="node.children?.length && node.isExpanded">
         <app-file-tree [fileNodes]="node.children!"></app-file-tree>
       </ul>
     </li>
