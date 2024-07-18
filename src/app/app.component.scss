@@ -14,5 +14,61 @@
     .main-area{
         width:100%;
         background-color: $dark-background-color;
+        // background: repeating-linear-gradient(
+        // -45deg, 
+        // rgba(30, 29, 32, 0.8),
+        // rgba(30, 29, 32, 0.8) 10px,
+        // rgba(43, 42, 45, 0.8) 10px,
+        // rgba(43, 42, 45, 0.8) 20px
+        // );
     }
+}
+
+.tabs{
+    padding-top:8px;
+    padding-left:5px;
+    background-color: $background-color;
+    display:flex;
+    min-height: 35px;
+    align-items: center;
+    gap:5px;
+    .tab{
+        margin-bottom: -1px;
+        background-color: $tab-background-color;
+        padding: 8px 14px;
+        padding-right: 10px;
+        border-radius: 6px 6px 0 0;
+        display: flex;
+        gap:6px;
+        user-select: none;
+        border-bottom: none;
+        p{
+            margin-right: 40px;
+        }
+        align-items: center;
+        cursor: pointer;
+        color: $tab-text-color;
+        transition: background-color 0.3s;
+        &:hover{
+            background-color: $light-background-color;
+        }
+    }
+    .active{
+        background-color: $selected-tab-background-color;
+        border: 1px solid $selected-tab-border-color;
+        border-bottom: none;
+        &:hover{
+            background-color: $selected-tab-hover-color;
+        }
+    }
+}
+
+.close{
+    width:16px;
+    height: 16px;
+}
+
+.tab-area{
+    border-top: 1px solid $selected-tab-border-color;
+    background-color: $dark-background-color;
 }

@@ -3,7 +3,15 @@
   <div class="horizontal">
     <app-sidebar></app-sidebar>
     <div class="main-area">
-      <router-outlet></router-outlet>
+      <div class="tabs">
+        <div class="tab" *ngFor="let tab of tabs" [class.active]="tab.Id === activeTabId" (clicked)="openTab(tab.path)">
+          <p>{{tab.title}}</p>
+          <button><img src="icons/x.svg" class="icon close" (click)="closeTab(tab.Id)"/></button>
+        </div>
+      </div>
+      <div class="tab-area">
+        <router-outlet></router-outlet>
+      </div>
     </div>
   </div>
   <app-toast-area></app-toast-area>
