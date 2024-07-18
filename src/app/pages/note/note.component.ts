@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef, HostListener, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NotesService } from '../../services/notes.service';
 import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
 import { FormsModule } from '@angular/forms';
-import { marked, MarkedOptions } from 'marked';
-import { debounce } from 'lodash';
+import { marked } from 'marked';
+
 interface Line {
   raw: string;
   rendered: string;
@@ -34,6 +34,7 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
       this.loadNote();
     });
   }
+
   ngAfterViewInit() {}
 
   ngOnDestroy(): void {
@@ -50,21 +51,25 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   updateRawContent(event: any, index: number) {
-    this.lines[index].raw = event.target.innerText;
+    if (index >= 0 && index < this.lines.length) {
+      this.lines[index].raw = event.target.innerText;
+    }
   }
 
-  
-
-  async updateLineContent(target: any,index: number) {
-    this.updateRawContent(target, index);
-    if (this.lines[index].raw !== this.lines[index].rendered) {
-      this.lines[index].rendered = this.syncMarkdownToHtml(this.lines[index].raw);
-      this.saveNote();
+  async updateLineContent(target: any, index: number) {
+    if (index >= 0 && index < this.lines.length) {
+      this.updateRawContent(target, index);
+      if (this.lines[index].raw !== this.lines[index].rendered) {
+        this.lines[index].rendered = this.syncMarkdownToHtml(this.lines[index].raw);
+        this.saveNote();
+      }
     }
   }
 
   selectLine(index: number) {
-    this.lines.forEach((line, i) => line.selected = (i === index));
+    if (index >= 0 && index < this.lines.length) {
+      this.lines.forEach((line, i) => line.selected = (i === index));
+    }
   }
 
   async insertLine(index: number, event: any) {
@@ -75,20 +80,24 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
       this.selectLine(index + 1);
       if (this.lineDivs.length > index + 1) {
         setTimeout(() => {
-          this.lineDivs.toArray()[index + 1].nativeElement.focus();
+          if (this.lineDivs.length > index + 1) {
+            this.lineDivs.toArray()[index + 1].nativeElement.focus();
+          }
         }, 0);
       }
     }, 0);
-  }  
+  }
 
   deleteLine(index: number) {
-    if (this.lines.length > 1) {
+    if (this.lines.length > 1 && index >= 0 && index < this.lines.length) {
       this.lines.splice(index, 1);
       this.saveNote();
       setTimeout(() => {
-        const focusIndex = Math.max(0, index - 1);
+        const focusIndex = Math.max(0, Math.min(index, this.lines.length - 1));
         this.selectLine(focusIndex);
-        this.lineDivs.toArray()[focusIndex].nativeElement.focus();
+        if (this.lineDivs.length > focusIndex) {
+          this.lineDivs.toArray()[focusIndex].nativeElement.focus();
+        }
       }, 0);
     }
   }
@@ -104,34 +113,38 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   handleKeydown(event: KeyboardEvent, index: number) {
-    switch (event.key) {
-      case 'Enter':
-        this.updateRawContent(event, index);
-        this.insertLine(index, event);
-        break;
-      case 'Backspace':
-        if (this.lines[index].raw === '') {
-          this.deleteLine(index);
-        }
-        break;
-      case 'a':
-        if (event.metaKey || event.ctrlKey) {
-          this.selectAll();
-          event.preventDefault();
-        }
-        break;
+    if (index >= 0 && index < this.lines.length) {
+      switch (event.key) {
+        case 'Enter':
+          this.updateRawContent(event, index);
+          this.insertLine(index, event);
+          break;
+        case 'Backspace':
+          if (this.lines[index].raw === '') {
+            this.deleteLine(index);
+          }
+          break;
+        case 'a':
+          if (event.metaKey || event.ctrlKey) {
+            this.selectAll();
+            event.preventDefault();
+          }
+          break;
+      }
     }
   }
 
   selectAll() {
     this.lines.forEach(line => line.selected = true);
     setTimeout(() => {
-      const range = document.createRange();
-      range.selectNodeContents(this.lineDivs.first.nativeElement);
-      const sel = window.getSelection();
-      if (sel) {
-        sel.removeAllRanges();
-        sel.addRange(range);
+      if (this.lineDivs.length > 0) {
+        const range = document.createRange();
+        range.selectNodeContents(this.lineDivs.first.nativeElement);
+        const sel = window.getSelection();
+        if (sel) {
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
       }
     }, 0);
   }
