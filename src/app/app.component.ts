@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.nav.getActiveTabId().subscribe(activeTabId => {
       this.activeTabId = activeTabId;
-      this.openTab(this.tabs[this.activeTabId].path);
+      this.router.navigate([this.tabs[this.activeTabId].path]);
     });
   }
 
@@ -47,9 +47,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     feather.replace();
   }
 
-  openTab(path:string){
-    this.router.navigate([path]);
-    console.log('openTab', path);
+  openTab(id:number){
+    this.nav.setActiveTabId(id);
+    this.router.navigate([this.tabs[id].path]);
   }
 
   ngOnInit() {
@@ -60,5 +60,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     else{
       this.toastsService.show({title:'Development', duration:3, type: 'success', message: 'Running in Browser'});
     }
+    this.openTab(this.activeTabId);
   }
 }

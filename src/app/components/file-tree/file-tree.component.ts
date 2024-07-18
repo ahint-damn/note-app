@@ -35,7 +35,6 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
         noteId: node.id,
         path: "note/" + node.id,
       }
-      console.log('tab', tab);
       this.nav.addTab(tab);
     }
   }

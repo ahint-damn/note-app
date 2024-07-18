@@ -4,9 +4,9 @@
     <app-sidebar></app-sidebar>
     <div class="main-area">
       <div class="tabs">
-        <div class="tab" *ngFor="let tab of tabs" [class.active]="tab.Id === activeTabId" (clicked)="openTab(tab.path)">
+        <div class="tab" *ngFor="let tab of tabs" [class.active]="tab.Id === activeTabId" (click)="openTab(tab.Id)">
           <p>{{tab.title}}</p>
-          <button><img src="icons/x.svg" class="icon close" (click)="closeTab(tab.Id)"/></button>
+          <button (click)="closeTab(tab.Id)"><img src="icons/x.svg" class="icon close" /></button>
         </div>
       </div>
       <div class="tab-area">

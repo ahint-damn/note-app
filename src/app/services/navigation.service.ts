@@ -42,7 +42,13 @@ export class NavigationService {
     if (this.activeTabId === id) {
       this.setActiveTabId(this.tabs.length - 1);
     }
+    if (this.tabs.length === 0) {
+      this.addTab({Id: 0, title: 'Welcome', path: 'welcome'});
+      this.setActiveTabId(0);
+    }
   }
 
-  constructor() { }
+  constructor() { 
+    this.addTab({Id: 0, title: 'Welcome', path: 'welcome'});
+  }
 }
