@@ -19,34 +19,59 @@ import { NotesService } from '../../services/notes.service';
 })
 export class FileTreeComponent implements AfterViewInit, OnInit {
   @Input() fileNodes: FileNode[] = [];
+  creatingFolder: boolean = false;
+  creatingFile: boolean = false;
 
-  constructor(private rtr: Router, private nav: NavigationService, private notes: NotesService) {}
+  constructor(private rtr: Router, private nav: NavigationService, private notes: NotesService) {
+    this.notes.creatingFile$.subscribe((creatingFile) => {
+      this.creatingFile = creatingFile;
+      console.log("Creating File" + creatingFile);
+    });
+    this.notes.creatingFolder$.subscribe((creatingFolder) => {
+      this.creatingFolder = creatingFolder;
+      console.log("Creating Folder" + creatingFolder);
+    });
+  }
 
   ngAfterViewInit(): void {
     feather.replace();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.fileNodes);
+  }
 
   contextMenu(event: MouseEvent, node: FileNode): void {
     event.preventDefault();
-    console.log(node);
-    console.log(this.fileNodes);
     this.addNodeToTree(node);
   }
 
   addNodeToTree(targetNode: FileNode): void {
+    if (this.notes.getCreatingFolder()){ 
+      return;
+    }
+    if (this.notes.getCreatingFile()){
+      this.notes.setCreatingFile(false);
+    }
+    this.notes.setCreatingFolder(true);
+
+    //if current level has a node with createFolder = true
+    if (targetNode.children && targetNode.children.filter((node) => node.createFolder).length > 0){
+      return;
+    }
+
+
     if (!targetNode.children) {
       targetNode.children = [];
     }
     const newNodePath = `${targetNode.path}/${targetNode.name}`;
     targetNode.children.push({
-      name: 'New Folder', // Ensuring a default name for new folders
+      name: '',
       children: [],
       isExpanded: false,
       icon: 'chevron-right',
       createFolder: true,
-      path: newNodePath, // Constructing the path correctly
+      path: newNodePath,
       parent: targetNode,
     });
   }
@@ -81,22 +106,27 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
   }
 
   createFolder(node: FileNode) {
-    console.log(node);
     const path = this.getFullPath(node);
-    console.log(path);
     this.notes.createDirectoryByPath(path);
-    this.notes.getFiles();
+    this.notes.resetFileTree();
+    console.log(`Creating folder at ${path}`);
   }
 
   createFile(node: FileNode) {
     const path = `${this.getFullPath(node)}.txt`;
     this.notes.saveNoteByPath(path, '');
-    this.notes.getFiles();
+    this.notes.resetFileTree();
   }
 
-  cancelEdit(node: FileNode) {
-    node.createFolder = false;
+  cancelFileEdit(node: FileNode) {
+    this.notes.setCreatingFile(false);
     node.createFile = false;
-    this.notes.getFiles();
+    this.notes.resetFileTree();
+  }
+
+  cancelFolderEdit(node: FileNode) {
+    this.notes.setCreatingFolder(false);
+    node.createFolder = false;
+    this.notes.resetFileTree();
   }
 }

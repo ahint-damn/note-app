@@ -58,7 +58,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     if (this.notesService.checkIfElectron()) {
       this.toastsService.show({title:'Development', duration:3, type: 'success', message: 'Running in Electron'});
-      this.notesService.getFiles();
+      this.notesService.resetFileTree();
     }
     else{
       this.toastsService.show({title:'Development', duration:3, type: 'success', message: 'Running in Browser'});

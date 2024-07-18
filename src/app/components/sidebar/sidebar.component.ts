@@ -16,11 +16,30 @@ export class SidebarComponent {
   fileNodes: FileNode[] = [];
 
   createFolder() {
-    this.fileNodes.push({name: '', children: [], isExpanded: false, icon: 'chevron-right', createFolder: true});
+    if (this.noteService.getCreatingFolder()){ 
+      return;
+    }
+    if (this.noteService.getCreatingFile()){
+      this.noteService.setCreatingFile(false);
+    }
+    this.noteService.setCreatingFolder(true);
+    if (this.fileNodes.filter((node) => node.createFolder).length === 0){
+      this.fileNodes.push({name: '', children: [], isExpanded: false, icon: 'chevron-right', createFolder: true});
+    }
   }
 
   createFile(){
-    this.fileNodes.push({name: '', children: [], isExpanded: false, icon: 'chevron-right', createFile: true});
+    if (this.noteService.getCreatingFile()){
+      return;
+    }
+    if (this.noteService.getCreatingFolder()){
+      this.noteService.setCreatingFolder(false);
+    }
+    this.noteService.setCreatingFile(true);
+    //if a node without createFile = true
+    if (this.fileNodes.filter((node) => node.createFile).length === 0){
+      this.fileNodes.push({name: '', children: [], isExpanded: false, icon: 'chevron-right', createFile: true});
+    }
   }
 
   constructor(private noteService: NotesService) {

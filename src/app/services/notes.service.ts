@@ -9,6 +9,12 @@ import { BehaviorSubject } from 'rxjs';
 export class NotesService {
   constructor() {}
 
+  //observable statuses
+  private creatingFolderSubject = new BehaviorSubject<boolean>(false);
+  creatingFolder$ = this.creatingFolderSubject.asObservable();
+  private creatingFileSubject = new BehaviorSubject<boolean>(false);
+  creatingFile$ = this.creatingFileSubject.asObservable();
+
   //observable file Nodes
   private fileNodes: FileNode[] = [];
   private fileNodesSubject = new BehaviorSubject<FileNode[]>([]);
@@ -19,21 +25,41 @@ export class NotesService {
     return !!(window && window.electron);
   };
 
+  //change status
+  setCreatingFolder = (status: boolean): void => {
+    this.creatingFolderSubject.next(status);
+  };
+
+  setCreatingFile = (status: boolean): void => {
+    this.creatingFileSubject.next(status);
+  };
+
+  //get status
+  getCreatingFolder = (): boolean => {
+    return this.creatingFolderSubject.value;
+  };
+
+  getCreatingFile = (): boolean => {
+    return this.creatingFileSubject.value;
+  };
+
   checkIfElectron = (): boolean => {
     return this.isElectron();
   };
 
   getFileTree = (): FileNode[] => {
     if (this.fileNodes.length === 0) {
-      this.getFiles();
+      this.resetFileTree();
     }
     return this.fileNodes;
   };
 
-  getFiles(): Promise<string[]> {
+  resetFileTree(): Promise<string[]> {
+    this.setCreatingFile(false);
+    this.setCreatingFolder(false);
     return new Promise((resolve) => {
       if (this.isElectron()) {
-        window.electron.getFiles().then(files => {
+        window.electron.resetFileTree().then(files => {
           if (files) {
             const tree = buildFileTree(files);
             this.fileNodes = tree;
