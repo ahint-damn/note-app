@@ -1,12 +1,12 @@
-import { Component, OnDestroy, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NotesService } from '../../services/notes.service';
 import { Subscription } from 'rxjs';
+import { NotesService } from '../../services/notes.service';
 import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
 import { FormsModule } from '@angular/forms';
 import * as feather from 'feather-icons';
-import { marked } from 'marked';
+import { marked, MarkedOptions } from 'marked';
 
 interface Line {
   raw: string;
@@ -21,16 +21,13 @@ interface Line {
   templateUrl: './note.component.html',
   styleUrls: ['./note.component.scss']
 })
-export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
+export class NoteComponent implements OnInit, OnDestroy {
+  @ViewChildren('lineDiv') lineDivs!: QueryList<ElementRef>;
   noteId: string = '';
   lines: Line[] = [];
   routeSub!: Subscription;
 
-  constructor(private router: Router, private route: ActivatedRoute, private notes: NotesService) {}
-
-  ngAfterViewInit(): void {
-    feather.replace();
-  }
+  constructor(private router: Router, private route: ActivatedRoute, private notesService: NotesService) {}
 
   ngOnInit(): void {
     this.routeSub = this.route.params.subscribe(params => {
@@ -39,44 +36,52 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  async loadNote() {
-    const content = await this.notes.readNoteByPath(this.notes.getNotePath(this.noteId));
-    this.lines = await Promise.all(content.split('\n').map(async line => ({
-      raw: line,
-      rendered: await this.convertMarkdownToHtml(line),
-      selected: false
-    })));
-  }
-
-  goBack() {
-    this.router.navigate(['/']);
-  }
-
   ngOnDestroy(): void {
-    if (this.routeSub) {
-      this.routeSub.unsubscribe();
+    this.routeSub?.unsubscribe();
+  }
+
+  async loadNote() {
+    const content = await this.notesService.readNoteByPath(this.notesService.getNotePath(this.noteId));
+    this.lines = content.split('\n').map(line => ({
+      raw: line,
+      rendered: this.syncMarkdownToHtml(line),
+      selected: false
+    }));
+  }
+
+  updateRawContent(event: any, index: number) {
+    this.lines[index].raw = event.target.innerText;
+  }
+
+  async updateLineContent(index: number) {
+    if (this.lines[index].raw !== this.lines[index].rendered) {
+      this.lines[index].rendered = this.syncMarkdownToHtml(this.lines[index].raw);
+      this.saveNote();
     }
+  }
+
+  selectLine(index: number) {
+    this.lines.forEach((line, i) => line.selected = (i === index));
+  }
+
+  async insertLine(index: number, event: any) {
+    event.preventDefault();
+    const newLine: Line = { raw: '', rendered: '', selected: true };
+    this.lines.splice(index + 1, 0, newLine);
+    setTimeout(() => {
+      this.selectLine(index + 1);
+      this.lineDivs.toArray()[index + 1].nativeElement.focus();
+    }, 0);
   }
 
   saveNote() {
     const content = this.lines.map(line => line.raw).join('\n');
-    this.notes.saveNoteByPath(this.notes.getNotePath(this.noteId), content);
+    this.notesService.saveNoteByPath(this.notesService.getNotePath(this.noteId), content);
   }
 
-  async updateLineContent(event: any, index: number) {
-    const rawContent = event.target.innerText;
-    this.lines[index].raw = rawContent;
-    this.lines[index].rendered = await this.convertMarkdownToHtml(rawContent);
-    this.saveNote();
-  }
-
-  selectLine(index: number) {
-    this.lines.forEach((line, i) => {
-      line.selected = i === index;
-    });
-  }
-
-  async convertMarkdownToHtml(markdown: string): Promise<string> {
-    return marked(markdown);
+  // Ensure synchronous operation
+  syncMarkdownToHtml(markdown: string): string {
+    const result = marked(markdown);
+    return typeof result === 'string' ? result : '';
   }
 }
