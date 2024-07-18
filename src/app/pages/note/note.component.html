@@ -6,9 +6,10 @@
              contenteditable="true"
              (focus)="selectLine(i)"
              (blur)="updateLineContent(i)"
-             (keydown.enter)="insertLine(i, $event)"
+             (keydown)="handleKeydown($event, i)"
              (input)="updateRawContent($event, i)" #lineDiv>
         </div>
       </div>
     </div>
-  </div>  
+  </div>
+  

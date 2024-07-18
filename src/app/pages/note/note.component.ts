@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NotesService } from '../../services/notes.service';
@@ -74,14 +74,57 @@ export class NoteComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
+  deleteLine(index: number) {
+    if (this.lines.length > 1) {
+      this.lines.splice(index, 1);
+      this.saveNote();
+      setTimeout(() => {
+        const focusIndex = Math.max(0, index - 1);
+        this.selectLine(focusIndex);
+        this.lineDivs.toArray()[focusIndex].nativeElement.focus();
+      }, 0);
+    }
+  }
+
   saveNote() {
     const content = this.lines.map(line => line.raw).join('\n');
     this.notesService.saveNoteByPath(this.notesService.getNotePath(this.noteId), content);
   }
 
-  // Ensure synchronous operation
   syncMarkdownToHtml(markdown: string): string {
     const result = marked(markdown);
     return typeof result === 'string' ? result : '';
+  }
+
+  handleKeydown(event: KeyboardEvent, index: number) {
+    switch (event.key) {
+      case 'Enter':
+        this.insertLine(index, event);
+        break;
+      case 'Backspace':
+        if (this.lines[index].raw === '') {
+          this.deleteLine(index);
+        }
+        break;
+      case 'a':
+        if (event.metaKey || event.ctrlKey) {
+          this.selectAll();
+          event.preventDefault();
+        }
+        break;
+    }
+  }
+
+  selectAll() {
+    this.lines.forEach(line => line.selected = true);
+    setTimeout(() => {
+      const range = document.createRange();
+      range.selectNodeContents(this.lineDivs.first.nativeElement);
+      const sel = window.getSelection();
+      if (sel) {
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    }, 0);
   }
 }
