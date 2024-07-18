@@ -32,19 +32,27 @@ export class NavigationService {
   }
 
   public setActiveTabId(id: number) {
-    this.activeTabId = id;
-    this.activeTabIdSubject.next(this.activeTabId);
+    if (id >= 0 && id < this.tabs.length) {
+      this.activeTabId = id;
+      this.activeTabIdSubject.next(this.activeTabId);
+    }
   }
 
   public closeTab(id: number) {
+    const tabIndex = this.tabs.findIndex(tab => tab.Id === id);
     this.tabs = this.tabs.filter(tab => tab.Id !== id);
     this.tabsSubject.next(this.tabs);
-    if (this.activeTabId === id) {
-      this.setActiveTabId(this.tabs.length - 1);
-    }
+
     if (this.tabs.length === 0) {
       this.addTab({Id: 0, title: 'Welcome', path: 'welcome'});
       this.setActiveTabId(0);
+    } else {
+      if (this.activeTabId === id) {
+        const newActiveTabId = tabIndex >= this.tabs.length ? this.tabs.length - 1 : tabIndex;
+        this.setActiveTabId(newActiveTabId);
+      } else if (this.activeTabId > id) {
+        this.setActiveTabId(this.activeTabId - 1);
+      }
     }
   }
 

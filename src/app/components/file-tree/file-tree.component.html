@@ -1,7 +1,7 @@
 <ul>
     <li *ngFor="let node of fileNodes">
-      <input (submit)="createFile(node)" *ngIf="node.createFile && creatingFile" type="text" [(ngModel)]="node.name" (blur)="createFile(node)" (keyup.enter)="createFile(node)" (keyup.escape)="cancelFileEdit(node)" placeholder="File"/>
-      <input (submit)="createFolder(node)" *ngIf="node.createFolder && creatingFolder" type="text" [(ngModel)]="node.name" (blur)="createFolder(node)" (keyup.enter)="createFolder(node)" (keyup.escape)="cancelFolderEdit(node)" placeholder="Folder"/>
+      <input (submit)="createFile(node)" *ngIf="node.createFile && creatingFile" type="text" [(ngModel)]="node.name" (keyup.enter)="createFile(node)" (keyup.escape)="cancelFileEdit(node)" placeholder="File"/>
+      <input (submit)="createFolder(node)" *ngIf="node.createFolder && creatingFolder" type="text" [(ngModel)]="node.name" (keyup.enter)="createFolder(node)" (keyup.escape)="cancelFolderEdit(node)" placeholder="Folder"/>
       <div class="area" (contextmenu)="contextMenu($event, node)" (click)="clicked(node)" [ngClass]="{'offset': node.extension}" *ngIf="!(node.name === '.DS_Store')">
         <img [src]="'icons/' + node.icon + '.svg'" class="icon" *ngIf="!node.extension && !node.createFile && !node.createFolder && !node.createFile && !node.createFolder" />
         <p *ngIf="node.name && !node.createFile && !node.createFolder">{{ node.name }}</p>

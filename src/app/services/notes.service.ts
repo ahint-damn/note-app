@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { buildFileTree, FileNode } from '../utils/file.utils';
 import { BehaviorSubject } from 'rxjs';
+import { ToastsService } from './toasts.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotesService {
-  constructor() {}
+  constructor(private toasts: ToastsService) {}
 
   //observable statuses
   private creatingFolderSubject = new BehaviorSubject<boolean>(false);
@@ -112,7 +113,14 @@ export class NotesService {
 
   saveNoteByPath = (path: string, content: string): void => {
     if (this.isElectron()) {
-      window.electron.saveNoteByPath(path, content);
+      try{
+        window.electron.saveNoteByPath(path, content);
+        this.toasts.show({title: 'Success', duration: 3, type: 'success', message: 'File created'});
+      }
+      catch{
+        this.toasts.show({title: 'Error', duration: 3, type: 'error', message: 'Error creating file'});
+      }
+
     }
   };
   

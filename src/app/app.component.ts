@@ -35,7 +35,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.nav.getActiveTabId().subscribe(activeTabId => {
       this.activeTabId = activeTabId;
-      if (this.tabs[this.activeTabId].path){
+      console.log(this.activeTabId);
+      if (this.tabs[this.activeTabId] !== undefined){
         this.router.navigate([this.tabs[this.activeTabId].path]);
       }
     });
@@ -52,16 +53,19 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   openTab(id:number){
     this.nav.setActiveTabId(id);
+    if (this.tabs[id] === undefined){
+      return;
+    }
     this.router.navigate([this.tabs[id].path]);
   }
 
   ngOnInit() {
     if (this.notesService.checkIfElectron()) {
-      this.toastsService.show({title:'Development', duration:3, type: 'success', message: 'Running in Electron'});
+      this.toastsService.show({title:'Development', duration:3, type: 'info', message: 'Running in Electron'});
       this.notesService.resetFileTree();
     }
     else{
-      this.toastsService.show({title:'Development', duration:3, type: 'success', message: 'Running in Browser'});
+      this.toastsService.show({title:'Development', duration:3, type: 'info', message: 'Running in Browser'});
     }
     this.openTab(this.activeTabId);
   }

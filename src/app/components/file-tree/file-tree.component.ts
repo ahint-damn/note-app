@@ -9,6 +9,7 @@ import { NavigationTab } from '../../interfaces/NavigationTab';
 import { NoteComponent } from '../../pages/note/note.component';
 import { FormsModule } from '@angular/forms';
 import { NotesService } from '../../services/notes.service';
+import { ToastsService } from '../../services/toasts.service';
 
 @Component({
   selector: 'app-file-tree',
@@ -22,14 +23,12 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
   creatingFolder: boolean = false;
   creatingFile: boolean = false;
 
-  constructor(private rtr: Router, private nav: NavigationService, private notes: NotesService) {
+  constructor(private rtr: Router, private nav: NavigationService, private notes: NotesService, private toasts: ToastsService) {
     this.notes.creatingFile$.subscribe((creatingFile) => {
       this.creatingFile = creatingFile;
-      console.log("Creating File" + creatingFile);
     });
     this.notes.creatingFolder$.subscribe((creatingFolder) => {
       this.creatingFolder = creatingFolder;
-      console.log("Creating Folder" + creatingFolder);
     });
   }
 

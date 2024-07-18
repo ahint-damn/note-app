@@ -89,6 +89,7 @@ ipcMain.on('save-note-by-path', (event, arg) => {
 //create directory by path
 ipcMain.on('create-directory-by-path', (event, arg) => {
   const directoryPath = path.join(notesDir, arg);
+  //check if directory exists
   if (fs.existsSync(directoryPath)) {
     event.sender.send('create-directory-by-path-response', 'Directory already exists');
     return;
