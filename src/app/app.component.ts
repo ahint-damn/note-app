@@ -35,8 +35,11 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.nav.getActiveTabId().subscribe(activeTabId => {
       this.activeTabId = activeTabId;
-      this.router.navigate([this.tabs[this.activeTabId].path]);
+      if (this.tabs[this.activeTabId].path){
+        this.router.navigate([this.tabs[this.activeTabId].path]);
+      }
     });
+    // this.notesService.saveNoteByPath('Lame Notes/Test/lamenote.txt', 'test');
   }
 
   closeTab(id: number){

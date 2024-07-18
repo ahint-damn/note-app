@@ -6,6 +6,9 @@ export interface FileNode {
   icon?: string;
   id?: string;
   path?: string;
+  createFolder?: boolean;
+  createFile?: boolean;
+  parent?: FileNode;
 }
 
 export function buildFileTree(fileList: string[]): FileNode[] {
@@ -23,13 +26,14 @@ export function buildFileTree(fileList: string[]): FileNode[] {
     const parts = filePath.split('/');
     let currentLevel = root;
     let currentPath = '';
+    let parentNode: FileNode | undefined = undefined;
 
     parts.forEach((part, index) => {
       currentPath += (currentPath ? '/' : '') + part;
       let existingNode = currentLevel.find(node => node.name === part);
 
       if (!existingNode) {
-        existingNode = { name: part, children: [], id: generateGuid(), path: currentPath };
+        existingNode = { name: part, children: [], id: generateGuid(), path: currentPath, parent: parentNode };
         if (index === parts.length - 1) {
           const extensionMatch = part.match(/\.([^.]+)$/);
           if (extensionMatch) {
@@ -45,6 +49,7 @@ export function buildFileTree(fileList: string[]): FileNode[] {
 
       if (index < parts.length - 1) {
         currentLevel = existingNode.children!;
+        parentNode = existingNode;
       }
     });
   });

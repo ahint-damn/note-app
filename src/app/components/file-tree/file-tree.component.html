@@ -1,8 +1,10 @@
 <ul>
     <li *ngFor="let node of fileNodes">
-      <div class="area" (click)="clicked(node)" [ngClass]="{'offset': node.extension}" *ngIf="!(node.name === '.DS_Store')">
-        <img [src]="'icons/' + node.icon + '.svg'" class="icon" *ngIf="!node.extension" />
-        <p>{{ node.name }}</p>
+      <div class="area" (contextmenu)="contextMenu($event, node)" (click)="clicked(node)" [ngClass]="{'offset': node.extension}" *ngIf="!(node.name === '.DS_Store')">
+        <img [src]="'icons/' + node.icon + '.svg'" class="icon" *ngIf="!node.extension && !node.createFile && !node.createFolder" />
+        <p *ngIf="node.name && !node.createFile && !node.createFolder">{{ node.name }}</p>
+        <input (submit)="createFile(node)" *ngIf="node.createFile" type="text" [(ngModel)]="node.name" (blur)="createFile(node)" (keyup.enter)="createFile(node)" (keyup.escape)="cancelEdit(node)"/>
+        <input (submit)="createFolder(node)" *ngIf="node.createFolder" type="text" [(ngModel)]="node.name" (blur)="createFolder(node)" (keyup.enter)="createFolder(node)" (keyup.escape)="cancelEdit(node)"/>
       </div>
       <ul *ngIf="node.children?.length && node.isExpanded">
         <app-file-tree [fileNodes]="node.children!"></app-file-tree>

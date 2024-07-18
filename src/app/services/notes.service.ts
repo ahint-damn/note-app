@@ -90,6 +90,11 @@ export class NotesService {
     }
   };
   
+  createDirectoryByPath = (path: string): void => {
+    if (this.isElectron()) {
+      window.electron.createDirectoryByPath(path);
+    }
+  };
 
 
   //getNotesDir

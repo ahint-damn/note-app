@@ -22,5 +22,9 @@ contextBridge.exposeInMainWorld('electron', {
   getFiles: () => new Promise((resolve) => {
     ipcRenderer.once('get-files-response', (event, data) => resolve(data));
     ipcRenderer.send('get-files');
+  }),
+  createDirectoryByPath: (path) => new Promise((resolve) => {
+    ipcRenderer.once('create-directory-by-path-response', () => resolve());
+    ipcRenderer.send('create-directory-by-path', path);
   })
 });

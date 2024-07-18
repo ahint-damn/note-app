@@ -15,6 +15,14 @@ import { FileNode, buildFileTree } from '../../utils/file.utils';
 export class SidebarComponent {
   fileNodes: FileNode[] = [];
 
+  createFolder() {
+    this.fileNodes.push({name: '', children: [], isExpanded: false, icon: 'chevron-right', createFolder: true});
+  }
+
+  createFile(){
+    this.fileNodes.push({name: '', children: [], isExpanded: false, icon: 'chevron-right', createFile: true});
+  }
+
   constructor(private noteService: NotesService) {
     this.noteService.fileNodes$.subscribe((fileNodes) => {
       this.fileNodes = fileNodes;

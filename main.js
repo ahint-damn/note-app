@@ -85,3 +85,14 @@ ipcMain.on('save-note-by-path', (event, arg) => {
   fs.writeFileSync(notePath, arg.content);
   event.sender.send('save-note-by-path-response');
 });
+
+//create directory by path
+ipcMain.on('create-directory-by-path', (event, arg) => {
+  const directoryPath = path.join(notesDir, arg);
+  if (fs.existsSync(directoryPath)) {
+    event.sender.send('create-directory-by-path-response', 'Directory already exists');
+    return;
+  }
+  fs.mkdirSync(directoryPath);
+  event.sender.send('create-directory-by-path-response');
+});
