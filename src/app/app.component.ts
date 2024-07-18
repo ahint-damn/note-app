@@ -35,7 +35,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.nav.getActiveTabId().subscribe(activeTabId => {
       this.activeTabId = activeTabId;
-      console.log(this.activeTabId);
       if (this.tabs[this.activeTabId] !== undefined){
         this.router.navigate([this.tabs[this.activeTabId].path]);
       }

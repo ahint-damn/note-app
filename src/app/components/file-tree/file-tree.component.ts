@@ -37,7 +37,6 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.fileNodes);
   }
 
   contextMenu(event: MouseEvent, node: FileNode): void {
