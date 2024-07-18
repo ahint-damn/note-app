@@ -1,8 +1,15 @@
 <div class="note-wrapper">
-    <div class="toolbar">
-        <button (click)="goBack()"><i data-feather="arrow-left" class="icon"></i></button>
-    </div>
     <div class="note-area">
-        <textarea [(ngModel)]="noteContent" (ngModelChange)="saveNote()" rows="10" cols="50"></textarea>
+      <div class="editor-preview">
+        <div *ngFor="let line of lines; let i = index" 
+             [innerHTML]="line.selected ? line.raw : line.rendered"
+             contenteditable="true"
+             (focus)="selectLine(i)"
+             (blur)="updateLineContent($event, i)"
+             (keydown)="handleKeydown($event, i)"
+              #lineDiv>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+  
