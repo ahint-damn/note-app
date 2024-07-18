@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef, HostListener, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NotesService } from '../../services/notes.service';
@@ -20,7 +20,7 @@ interface Line {
   templateUrl: './note.component.html',
   styleUrls: ['./note.component.scss']
 })
-export class NoteComponent implements OnInit, OnDestroy {
+export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChildren('lineDiv') lineDivs!: QueryList<ElementRef>;
   noteId: string = '';
   lines: Line[] = [];
@@ -34,6 +34,7 @@ export class NoteComponent implements OnInit, OnDestroy {
       this.loadNote();
     });
   }
+  ngAfterViewInit() {}
 
   ngOnDestroy(): void {
     this.routeSub?.unsubscribe();
@@ -72,9 +73,13 @@ export class NoteComponent implements OnInit, OnDestroy {
     this.lines.splice(index + 1, 0, newLine);
     setTimeout(() => {
       this.selectLine(index + 1);
-      this.lineDivs.toArray()[index + 1].nativeElement.focus();
+      if (this.lineDivs.length > index + 1) {
+        setTimeout(() => {
+          this.lineDivs.toArray()[index + 1].nativeElement.focus();
+        }, 0);
+      }
     }, 0);
-  }
+  }  
 
   deleteLine(index: number) {
     if (this.lines.length > 1) {
