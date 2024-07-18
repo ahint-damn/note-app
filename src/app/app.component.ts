@@ -14,7 +14,9 @@ import { NoteComponent } from './pages/note/note.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ToolbarComponent, NoteComponent, SidebarComponent, ResizableDirective, ToastAreaComponent, FileTreeComponent],
+  imports: [RouterOutlet, ToolbarComponent, NoteComponent, SidebarComponent, 
+    ResizableDirective, ToastAreaComponent, FileTreeComponent, 
+    ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

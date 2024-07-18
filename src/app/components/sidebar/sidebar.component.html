@@ -1,16 +1,26 @@
 <div class="sidebar-wrapper" appResizable="right">
-    <div class="inset-wrapper">
-      <button><i data-feather="folder" class="icon filled"></i></button>
+  <div class="inset-wrapper">
+    <div class="option">
+      <button class=""><i data-feather="home" class="icon"></i></button>
     </div>
-    <div class="sidebar-content">
-      <div class="action-buttons">
-        <button><i data-feather="folder-plus" class="icon"></i>
-        </button>
-        <button><i data-feather="file-plus" class="icon"></i></button>
-      </div>
-      <div class="sidebar-list">
-        <app-file-tree [fileNodes]="fileNodes"></app-file-tree>
-      </div>
+    <div class="option toggled">
+      <button class=""><i data-feather="folder" class="icon"></i></button>
+    </div>
+    <div class="option">
+      <button class=""><i data-feather="search" class="icon"></i></button>
+    </div>
+    <div class="option">
+      <button class=""><i data-feather="code" class="icon"></i></button>
     </div>
   </div>
-  
+  <div class="sidebar-content">
+    <div class="action-buttons">
+      <button><i data-feather="folder-plus" class="icon"></i>
+      </button>
+      <button><i data-feather="file-plus" class="icon"></i></button>
+    </div>
+    <div class="sidebar-list">
+      <app-file-tree [fileNodes]="fileNodes"></app-file-tree>
+    </div>
+  </div>
+</div>
