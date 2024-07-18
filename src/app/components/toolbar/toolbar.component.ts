@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { NavigationService } from '../../services/navigation.service';
 import { NavigationTab } from '../../interfaces/NavigationTab';
+import { TooltipDirective } from '../../directives/tooltip.directive';
 @Component({
   selector: 'app-toolbar',
   standalone: true,
-  imports: [],
+  imports: [TooltipDirective],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss'
 })
