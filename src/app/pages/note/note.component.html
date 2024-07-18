@@ -5,9 +5,9 @@
              [innerHTML]="line.selected ? line.raw : line.rendered"
              contenteditable="true"
              (focus)="selectLine(i)"
-             (blur)="updateLineContent(i)"
+             (blur)="updateLineContent($event, i)"
              (keydown)="handleKeydown($event, i)"
-             (input)="updateRawContent($event, i)" #lineDiv>
+              #lineDiv>
         </div>
       </div>
     </div>

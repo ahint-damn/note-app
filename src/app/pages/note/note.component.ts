@@ -5,9 +5,8 @@ import { NotesService } from '../../services/notes.service';
 import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
 import { FormsModule } from '@angular/forms';
-import * as feather from 'feather-icons';
 import { marked, MarkedOptions } from 'marked';
-
+import { debounce } from 'lodash';
 interface Line {
   raw: string;
   rendered: string;
@@ -53,7 +52,10 @@ export class NoteComponent implements OnInit, OnDestroy {
     this.lines[index].raw = event.target.innerText;
   }
 
-  async updateLineContent(index: number) {
+  
+
+  async updateLineContent(target: any,index: number) {
+    this.updateRawContent(target, index);
     if (this.lines[index].raw !== this.lines[index].rendered) {
       this.lines[index].rendered = this.syncMarkdownToHtml(this.lines[index].raw);
       this.saveNote();
@@ -99,6 +101,7 @@ export class NoteComponent implements OnInit, OnDestroy {
   handleKeydown(event: KeyboardEvent, index: number) {
     switch (event.key) {
       case 'Enter':
+        this.updateRawContent(event, index);
         this.insertLine(index, event);
         break;
       case 'Backspace':
