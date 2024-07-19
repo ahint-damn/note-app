@@ -56,6 +56,7 @@ export class NotesService {
   }
 
   resetFileTree(): Promise<string[]> {
+    const expandedState = this.getExpandedState(this.fileNodesSubject.value);
     this.setCreatingFile(false);
     this.setCreatingFolder(false);
     return new Promise((resolve) => {
@@ -63,6 +64,7 @@ export class NotesService {
         window.electron.resetFileTree().then(files => {
           if (files) {
             const tree = buildFileTree(files);
+            this.restoreExpandedState(tree, expandedState);
             this.fileNodesSubject.next(tree);
             resolve(files);
           }
@@ -187,5 +189,37 @@ export class NotesService {
       });
       this.nav.closeTabByNoteId(id);
     }
+  }
+
+  private getExpandedState(nodes: FileNode[]): { [key: string]: boolean } {
+    const expandedState: { [key: string]: boolean } = {};
+    const traverseNodes = (nodes: FileNode[]) => {
+      nodes.forEach(node => {
+        if (node.path) {
+          expandedState[node.path] = node.isExpanded || false;
+        }
+        if (node.children) {
+          traverseNodes(node.children);
+        }
+      });
+    };
+    traverseNodes(nodes);
+    return expandedState;
+  }  
+  
+  private restoreExpandedState(nodes: FileNode[], expandedState: { [key: string]: boolean }): void {
+    const traverseNodes = (nodes: FileNode[]) => {
+      nodes.forEach(node => {
+        if (node.path && expandedState[node.path] !== undefined) {
+          node.isExpanded = expandedState[node.path];
+          node.icon = node.isExpanded ? 'chevron-down' : 'chevron-right';
+        } else {
+        }
+        if (node.children) {
+          traverseNodes(node.children);
+        }
+      });
+    };
+    traverseNodes(nodes);
   }
 }
