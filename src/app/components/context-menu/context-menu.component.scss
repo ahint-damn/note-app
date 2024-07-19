@@ -1,0 +1,29 @@
+.context-menu {
+    background-color: rgb(28, 28, 28);
+    color: rgb(211, 211, 211);
+    padding: 5px 10px;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000 !important;
+    position: absolute;
+    font-size: 0.8rem;
+    width: max-content;
+  
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+  
+      li {
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+        
+        &:hover {
+          background-color: rgb(50, 50, 50);
+        }
+      }
+    }
+  }
+  

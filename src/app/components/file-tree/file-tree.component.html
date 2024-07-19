@@ -1,14 +1,42 @@
 <ul>
-    <li *ngFor="let node of fileNodes">
-      <input (submit)="createFile(node)" *ngIf="node.createFile && creatingFile" type="text" [(ngModel)]="node.name" (keyup.enter)="createFile(node)" (keyup.escape)="cancelFileEdit(node)" placeholder="File"/>
-      <input (submit)="createFolder(node)" *ngIf="node.createFolder && creatingFolder" type="text" [(ngModel)]="node.name" (keyup.enter)="createFolder(node)" (keyup.escape)="cancelFolderEdit(node)" placeholder="Folder"/>
-      <div class="area" (contextmenu)="contextMenu($event, node)" (click)="clicked(node)" [ngClass]="{'offset': node.extension}" *ngIf="!(node.name === '.DS_Store')">
-        <img [src]="'icons/' + node.icon + '.svg'" class="icon" *ngIf="!node.extension && !node.createFile && !node.createFolder && !node.createFile && !node.createFolder" />
-        <p *ngIf="node.name && !node.createFile && !node.createFolder">{{ node.name }}</p>
-      </div>
-      <ul *ngIf="node.children?.length && node.isExpanded">
-        <app-file-tree [fileNodes]="node.children!"></app-file-tree>
-      </ul>
-    </li>
-  </ul>
-  
+  <li *ngFor="let node of fileNodes">
+    <form *ngIf="node.createFile && creatingFile" (submit)="createFile(node)">
+      <input
+        type="text"
+        [(ngModel)]="node.name"
+        (keyup.enter)="createFile(node)"
+        (keyup.escape)="cancelFileEdit(node)"
+        placeholder="File"
+        name="fileName"
+      />
+    </form>
+    <form *ngIf="node.createFolder && creatingFolder" (submit)="createFolder(node)">
+      <input
+        type="text"
+        [(ngModel)]="node.name"
+        (keyup.enter)="createFolder(node)"
+        (keyup.escape)="cancelFolderEdit(node)"
+        placeholder="Folder"
+        name="folderName"
+      />
+    </form>
+    <div
+      class="area"
+      (contextmenu)="contextMenu($event)"
+      [appContextMenu]="folderRightClickContextMenu"
+      (click)="clicked(node)"
+      [ngClass]="{ 'offset': node.extension }"
+      *ngIf="!(node.name === '.DS_Store') && !node.createFile && !node.createFolder"
+    >
+      <img
+        [src]="'icons/' + node.icon + '.svg'"
+        class="icon"
+        *ngIf="!node.extension"
+      />
+      <p *ngIf="node.name">{{ node.name }}</p>
+    </div>
+    <ul *ngIf="node.children?.length && node.isExpanded">
+      <app-file-tree [fileNodes]="node.children!"></app-file-tree>
+    </ul>
+  </li>
+</ul>

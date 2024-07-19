@@ -1,0 +1,7 @@
+<div class="context-menu">
+  <ul>
+    <li *ngFor="let item of items" (click)="onItemClicked(item)">
+      {{ item.label }}
+    </li>
+  </ul>
+</div>
