@@ -14,12 +14,14 @@ export interface FileNode {
 export function buildFileTree(fileList: string[]): FileNode[] {
   const root: FileNode[] = [];
 
-  const generateGuid = (): string => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-      const r = Math.random() * 16 | 0;
-      const v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
+  const generatePersistentId = (path: string): string => {
+    let hash = 0;
+    for (let i = 0; i < path.length; i++) {
+      const char = path.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash |= 0;
+    }
+    return hash.toString();
   };
 
   fileList.forEach(filePath => {
@@ -33,7 +35,7 @@ export function buildFileTree(fileList: string[]): FileNode[] {
       let existingNode = currentLevel.find(node => node.name === part);
 
       if (!existingNode) {
-        existingNode = { name: part, children: [], id: generateGuid(), path: currentPath, parent: parentNode };
+        existingNode = { name: part, children: [], id: generatePersistentId(currentPath), path: currentPath, parent: parentNode };
         if (index === parts.length - 1) {
           const extensionMatch = part.match(/\.([^.]+)$/);
           if (extensionMatch) {

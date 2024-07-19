@@ -28,6 +28,8 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
   @ViewChild('folderInput') folderInput!: any;
   @ViewChild('fileInput') fileInput!: any;
 
+  private openFileIds: Set<string> = new Set();
+
   constructor(
     private rtr: Router,
     private nav: NavigationService,
@@ -69,8 +71,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
           },
         }
       );
-    }
-    else{
+    } else {
       contextMenu.push(
         {
           label: 'Create File',
@@ -104,6 +105,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
             if (alert.positiveResponse) {
               this.notes.deleteNodeById(node.id!);
               this.notes.resetFileTree();
+              this.openFileIds.delete(node.id!);
             }
           });
         },
@@ -148,6 +150,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       createFile: true,
       path: newNodePath,
       parent: targetNode,
+      id: this.generatePersistentId(newNodePath),
     });
   }
 
@@ -179,6 +182,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       createFolder: true,
       path: newNodePath,
       parent: targetNode,
+      id: this.generatePersistentId(newNodePath),
     });
   }
 
@@ -196,6 +200,11 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
     if (!node.extension) {
       this.toggleNode(node);
     } else {
+      if (this.openFileIds.has(node.id!)) {
+        console.log(`[i] File ${node.id} is already open`);
+        return;
+      }
+
       const tab: NavigationTab = {
         Id: 0,
         title: node.name,
@@ -203,6 +212,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
         path: 'note/' + node.id,
       };
       this.nav.addTab(tab);
+      this.openFileIds.add(node.id!);
       console.log(`[i] Opening note ${node.id}`, tab);
     }
   }
@@ -241,5 +251,15 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
     this.notes.setCreatingFolder(false);
     node.createFolder = false;
     this.notes.resetFileTree();
+  }
+
+  private generatePersistentId(path: string): string {
+    let hash = 0;
+    for (let i = 0; i < path.length; i++) {
+      const char = path.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash |= 0;
+    }
+    return hash.toString();
   }
 }
