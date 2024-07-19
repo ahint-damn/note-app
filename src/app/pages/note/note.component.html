@@ -1,6 +1,7 @@
 <div class="note-wrapper">
   <div class="note-area" #noteArea>
-    <textarea [(ngModel)]="noteContent" pInputTextarea (input)="valueChanged()" class="custom-textarea"></textarea>
+    <textarea [(ngModel)]="noteContent" pInputTextarea (input)="valueChanged()" 
+    class="custom-textarea" #textArea></textarea>
   </div>
   <div class="note-stats" #stats>
     <div class="stats">

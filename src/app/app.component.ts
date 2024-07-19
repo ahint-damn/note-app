@@ -52,7 +52,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   ) {
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd){
-        console.log(val);
         if (val.url.includes('settings') || val.url.includes('account')){
           this.isPopup = true;
         }
@@ -90,14 +89,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   alertConfirmed(){
     this.alertFromService.positiveResponse = true;
     this.alertService.setAlert(this.alertFromService);
-    console.log(this.alertFromService);
     this.alertService.setShowAlert(false);
   }
 
   alertCancelled(){
     this.alertFromService.negativeResponse = true;
     this.alertService.setAlert(this.alertFromService);
-    console.log(this.alertFromService);
     this.alertService.setShowAlert(false);
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ResizableDirective } from '../../directives/resizable.directive';
 import { CommonModule } from '@angular/common';
 import { InputSwitchModule } from 'primeng/inputswitch';
@@ -78,23 +78,28 @@ export class SettingsComponent implements OnInit {
   }
 
   save() {
-    console.log(this.settings);
     this.settingsService.saveConfigJson(JSON.stringify(this.settings));
     (window as any).electron.windowControl('close-popup');
-    // this.toast.show(this.savedToast); not working????
   }
 
   cancel() {
-    //TODOO: close window nav
     (window as any).electron.windowControl('close-popup');
   }
 
   close(){
     (window as any).electron.windowControl('close-popup');
   }
-
+  
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.cancel();
+    }
+    else if (event.key === 'Enter') {
+      this.save();
+    }
+  }
 
   changePassword(){
-    //open account
   }
 }

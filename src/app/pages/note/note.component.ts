@@ -8,7 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { marked } from 'marked';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { debounce } from 'lodash';
-
+import { Settings } from '../../interfaces/Settings';
+import { SettingsService } from '../../services/settings.service';
 @Component({
   selector: 'app-note',
   standalone: true,
@@ -17,17 +18,23 @@ import { debounce } from 'lodash';
   styleUrls: ['./note.component.scss']
 })
 export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChildren('lineDiv') lineDivs!: QueryList<ElementRef>;
   noteId: string = '';
   routeSub!: Subscription;
   wordCount: number = 0;
   charCount: number = 0;
   @ViewChild('stats') stats!: ElementRef;
   @ViewChild('noteArea') noteArea!: ElementRef;
+  @ViewChild('textArea') textArea!: ElementRef;
   noteContent: string = '';
+  currentConfig!: Settings;
 
-  constructor(private route: ActivatedRoute, private notesService: NotesService) {
+  constructor(private route: ActivatedRoute, private notesService: NotesService,
+    private settings: SettingsService) {
     this.valueChanged = debounce(this.valueChanged.bind(this), 300); // Debounce for 300 milliseconds
+    settings.config$.subscribe((config: Settings) => {
+      this.currentConfig = config;
+      this.updateStyling();
+    });
   }
 
   ngOnInit(): void {
@@ -35,6 +42,13 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
       this.noteId = params['id'];
       this.loadNote();
     });
+    this.updateStyling();
+  }
+
+  updateStyling(){
+    if (!this.textArea) return;
+    this.textArea.nativeElement.style.fontSize = this.currentConfig.editor.fontSize + 'px';
+    this.textArea.nativeElement.style.fontFamily = this.currentConfig.editor.fontFamily;
   }
 
   valueChanged() {
@@ -48,6 +62,7 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   updateStats(){
+    if (!this.textArea) return;
     this.getWordCount();
     this.getCharCount();
   }
@@ -59,6 +74,8 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     this.centerStats();
+    this.updateStats();
+    this.updateStyling();
   }
 
   getWordCount() {
@@ -91,10 +108,10 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
     const content = await this.notesService.readNoteByPath(this.notesService.getNotePath(this.noteId));
     this.noteContent = content;
     this.updateStats();
+    this.updateStyling();
   }
 
   saveNote() {
-    console.log('Saving note');
     this.notesService.saveNoteByPath(this.notesService.getNotePath(this.noteId), this.noteContent);
   }
 }

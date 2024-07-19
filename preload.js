@@ -42,5 +42,6 @@ contextBridge.exposeInMainWorld('electron', {
   getConfigJson: () => new Promise((resolve) => {
     ipcRenderer.once('get-config-response', (event, data) => resolve(data));
     ipcRenderer.send('get-config');
-  })
+  }),
+  onReloadConfig: (callback) => ipcRenderer.on('reload-config', callback)
 });

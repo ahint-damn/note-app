@@ -27,7 +27,7 @@ function createWindow() {
 
 newWindowInstances = [];
 
-function createNewWindow(route) {
+function createNewWindow(route, onCloseCallback) {
   let newWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -48,6 +48,9 @@ function createNewWindow(route) {
 
   newWindow.on('closed', function () {
     newWindow = null;
+    if (typeof onCloseCallback === 'function') {
+      onCloseCallback();
+    }
   });
 
   newWindowInstances.push(newWindow);
@@ -187,9 +190,13 @@ ipcMain.on('delete-node-by-path', (event, arg) => {
 
 // Open new window with route
 ipcMain.on('open-in-new-window', (event, route) => {
-  createNewWindow(route);
+  const onCloseCallback = () => {
+    mainWindow.webContents.send('reload-config');
+  };
+  createNewWindow(route, onCloseCallback);
   event.sender.send('open-in-new-window-response');
 });
+
 
 // Save config (JSON STRING)
 ipcMain.on('save-config', (event, config) => {

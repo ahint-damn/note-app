@@ -9,6 +9,7 @@ interface ElectronAPI {
   openInNewWindow(url: string): void;
   saveConfigJson(configJSON: string): void;
   getConfigJson(): Promise<string>;
+  onReloadConfig(callback: () => void): void;
 }
 
 interface Window {

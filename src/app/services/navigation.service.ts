@@ -73,7 +73,6 @@ export class NavigationService {
 
   openInNewWindow(url: string): void {
     if (this.isElectron()) {
-      console.log('openInNewWindow', url);
       window.electron.openInNewWindow(url);
     }
   }

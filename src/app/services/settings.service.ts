@@ -18,8 +18,13 @@ export class SettingsService {
 
   config$: Observable<Settings> = this.configSubject.asObservable();
 
-  
-  constructor() { }
+  constructor() { 
+    if (this.isElectron()) {
+      window.electron.onReloadConfig(() => {
+        this.loadConfigJson();
+      });
+    }
+  }
 
   getConfigJson = (): Observable<Settings> => {
     return this.config$;
@@ -29,7 +34,6 @@ export class SettingsService {
     if (this.isElectron()) {
       window.electron.getConfigJson().then((configJSON: string) => {
         this.configSubject.next(JSON.parse(configJSON));
-        console.log('Settings loaded');
       });
     }
   };
@@ -43,5 +47,4 @@ export class SettingsService {
       window.electron.saveConfigJson(configJSON);
     }
   }
-
 }
