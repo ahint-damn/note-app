@@ -16,6 +16,7 @@ import { AlertComponent } from './components/alert/alert.component';
 import { Alert } from './interfaces/Alert';
 import { AlertService } from './services/alert.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SettingsService } from './services/settings.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -43,6 +44,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   
   constructor(
     private router: Router, 
+    private settingsService: SettingsService,
     private alertService: AlertService, 
     private notesService: NotesService, 
     private toastsService: ToastsService, 
@@ -116,6 +118,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.settingsService.loadConfigJson();
     if (this.notesService.checkIfElectron()) {
       this.toastsService.show({duration:3, type: 'info', message: 'Electron'});
       this.notesService.resetFileTree();

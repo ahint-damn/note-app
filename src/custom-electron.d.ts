@@ -7,6 +7,8 @@ interface ElectronAPI {
   createDirectoryByPath(path: string): void;
   deleteNodeByPath(path: string): Promise<void>;
   openInNewWindow(url: string): void;
+  saveConfigJson(configJSON: string): void;
+  getConfigJson(): Promise<string>;
 }
 
 interface Window {

@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class ToolbarComponent {
   @Input() title: string = 'Quotient';
+  @Input() target: string = 'main';
   @Input() showOptions: boolean = true;
   constructor(private nav: NavigationService, private router: Router) {}
 
@@ -42,15 +43,15 @@ export class ToolbarComponent {
     this.nav.openInNewWindow('account');
   }
   minimize() {
-    (window as any).electron.windowControl('minimize');
+    (window as any).electron.windowControl('minimize-' + this.target);
   }
 
   close() {
-    (window as any).electron.windowControl('close');
+    (window as any).electron.windowControl('close-' + this.target);
   }
 
   maximize() {
-    (window as any).electron.windowControl('maximize');
+    (window as any).electron.windowControl('maximize-' + this.target);
   }
 }
 

@@ -9,7 +9,9 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { ColorPickerModule } from 'primeng/colorpicker';
-
+import { SettingsService } from '../../services/settings.service';
+import { ToastsService } from '../../services/toasts.service';
+import { Toast } from '../../interfaces/Toast';
 @Component({
   selector: 'app-settings',
   standalone: true,
@@ -21,23 +23,34 @@ import { ColorPickerModule } from 'primeng/colorpicker';
   styleUrl: './settings.component.scss'
 })
 export class SettingsComponent implements OnInit {
-  constructor() {}
   options: string[] = ['General', 'Appearance', 'Notifications', 'Privacy', 'Security', 'Help'];
   selectedOption: string = 'General';
   languages: any[] | undefined;
   themes: any[] | undefined;
-  defaultSettings: Settings = {
-    general: {autoUpdate: true, language: 'en'},
-    editor: {alwaysFocusNewTabs: true, showLineNumbers: true, fontSize: 14, fontFamily: 'Arial', stats: true},
-    appearance: {theme: 'dark', UIFontSize: 14, UIFontFamily: 'Arial', accentColor: '#ff5f5f'},
-    notifications: {email: true, push: true, sms: true},
-    privacy: {allowCookies: true, allowTracking: true, allowThirdParty: true},
-    security: {twoFactor: true, encryption: false, usePassword: false}
-  };
+
   settings!: Settings;
 
+  savedToast: Toast = {
+    duration: 3,
+    type: 'success',
+    title: 'Settings Saved',
+    message: 'Your settings have been saved successfully'
+  };
+
+  settingsBeforeChanges: Settings | undefined;
+
+
+  constructor(private settingsService: SettingsService, private toast: ToastsService) {
+    this.settings = this.settingsService.defaultSettings;
+    this.settingsService.config$.subscribe((settings: Settings) => {
+      this.settings = settings;
+    });
+    this.settingsService.loadConfigJson();
+    this.settingsBeforeChanges = this.settings;
+   }
+
+
   ngOnInit() {
-    this.settings = this.defaultSettings;
     this.languages = [
       { label: 'English', value: 'en' },
       { label: 'Spanish', value: 'es' },
@@ -58,6 +71,21 @@ export class SettingsComponent implements OnInit {
   toggle(option: string) {
     this.selectedOption = option;
   }
+
+  reset() {
+    this.settings = this.settingsBeforeChanges!;
+  }
+
+  save() {
+    console.log(this.settings);
+    this.settingsService.saveConfigJson(JSON.stringify(this.settings));
+    this.toast.show(this.savedToast);
+  }
+
+  cancel() {
+    //TODOO: close window nav
+  }
+
 
   changePassword(){
     //open account

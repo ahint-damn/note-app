@@ -25,6 +25,8 @@ function createWindow() {
   });
 }
 
+newWindowInstances = [];
+
 function createNewWindow(route) {
   let newWindow = new BrowserWindow({
     width: 800,
@@ -48,6 +50,7 @@ function createNewWindow(route) {
     newWindow = null;
   });
 
+  newWindowInstances.push(newWindow);
   return newWindow;
 }
 
@@ -77,12 +80,38 @@ console.log(`[i] notes directory: ${notesDir}`);
 
 // Handle window control events
 ipcMain.on('window-control', (event, arg) => {
+  lastWindow = newWindowInstances[newWindowInstances.length - 1];
+  console.log(`[i] window control: ${arg}`);
   switch (arg) {
-    case 'minimize':
+    case 'minimize-popup':
+      lastWindow.minimize();
+      break;
+    case 'maximize-popup':
+      if (lastWindow.isMaximized()) {
+        lastWindow.unmaximize();
+      }
+      else {
+        lastWindow.maximize();
+      }
+      break;
+    case 'close-popup':
+      lastWindow.close();
+      break;
+    case 'minimize-main':
       mainWindow.minimize();
       break;
-    case 'close':
+    case 'close-main':
       mainWindow.close();
+      break;
+    case 'maximize-main':
+      if (mainWindow.isMaximized()) {
+        mainWindow.unmaximize();
+      }
+      else {
+        mainWindow.maximize();
+      }
+      break;
+    default:
       break;
   }
 });
@@ -143,7 +172,23 @@ ipcMain.on('open-in-new-window', (event, route) => {
 // Save config (JSON STRING)
 ipcMain.on('save-config', (event, config) => {
   const configPath = path.join(configDir, 'config.json');
+  if (!fs.existsSync(configDir)) {
+    fs.mkdirSync(configDir);
+    console.log(`[i] config directory created: ${configDir}`);
+  }
   fs.writeFileSync(configPath, config);
+  console.log(`[i] config saved: ${config}`);
   event.sender.send('save-config-response');
 });
-  
+
+//get config
+ipcMain.on('get-config', (event) => {
+  const configPath = path.join(configDir, 'config.json');
+  if (!fs.existsSync(configPath)) {
+    event.sender.send('get-config-response', null);
+    return;
+  }
+  const config = fs.readFileSync(configPath, 'utf-8');
+  console.log(`[i] config read: ${config}`);
+  event.sender.send('get-config-response', config);
+});
