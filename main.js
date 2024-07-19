@@ -97,3 +97,16 @@ ipcMain.on('create-directory-by-path', (event, arg) => {
   fs.mkdirSync(directoryPath);
   event.sender.send('create-directory-by-path-response');
 });
+
+//delete-node-by-path (file or directory)
+ipcMain.on('delete-node-by-path', (event, arg) => {
+  const nodePath = path.join(notesDir, arg);
+  //check if node exists
+  if (!fs.existsSync(nodePath
+  )) {
+    event.sender.send('delete-node-by-path-response', 'Node does not exist');
+    return;
+  }
+  fs.rmSync(nodePath, { recursive: true });
+  event.sender.send('delete-node-by-path-response');
+});

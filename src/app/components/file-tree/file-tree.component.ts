@@ -22,7 +22,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
   @Input() fileNodes: FileNode[] = [];
   creatingFolder: boolean = false;
   creatingFile: boolean = false;
-  
+
   constructor(
     private rtr: Router,
     private nav: NavigationService,
@@ -36,42 +36,53 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       this.creatingFolder = creatingFolder;
     });
   }
-  
+
   getContextMenu(node: FileNode): ContextMenuItem[] {
     if (node.createFolder || node.createFile) {
       return [];
     }
 
+    var contextMenu: ContextMenuItem[] = [];
+
     if (node.extension) {
-      const contextMenu: ContextMenuItem[] = [
+      contextMenu.push(
         {
           label: 'Open',
           action: () => {
             this.clicked(node);
           },
+        }
+      );
+    }
+    else{
+
+      contextMenu.push(
+        {
+          label: 'Create Folder',
+          action: () => {
+            this.createFolderNode(node);
+          },
         },
-      ];
-      return contextMenu;
+        {
+          label: 'Create File',
+          action: () => {
+            this.createFileNode(node);
+          },
+        }
+      );
     }
 
-    const contextMenu: ContextMenuItem[] = [
+    contextMenu.push(
       {
-        label: 'Create Folder',
+        label: 'Delete',
         action: () => {
-          this.createFolderNode(node);
+          this.notes.deleteNodeById(node.id!);
+          this.notes.resetFileTree();
         },
-      },
-      {
-        label: 'Create File',
-        action: () => {
-          this.createFileNode(node);
-        },
-      },
-    ];
+      }
+    );
     return contextMenu;
   }
-      
-
 
   ngAfterViewInit(): void {
     feather.replace();
@@ -92,26 +103,32 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       this.notes.setCreatingFolder(false);
     }
     this.notes.setCreatingFile(true);
-    
-    if (targetNode.children && targetNode.children.filter((node) => node.createFile).length > 0) {
+
+    if (
+      targetNode.children &&
+      targetNode.children.filter((node) => node.createFile).length > 0
+    ) {
       return;
     }
 
     if (!targetNode.children) {
       targetNode.children = [];
     }
-    const newNodePath = `${targetNode.path}/${targetNode.name}`;
+
+    const newNodePath = `${targetNode.path}/${targetNode.name}.txt`;
     targetNode.children.push({
       name: '',
       children: [],
       isExpanded: false,
       icon: 'chevron-right',
       createFile: true,
+      path: newNodePath,
+      parent: targetNode,
     });
   }
 
   createFolderNode(targetNode: FileNode): void {
-    if (this.notes.getCreatingFolder()) { 
+    if (this.notes.getCreatingFolder()) {
       return;
     }
     if (this.notes.getCreatingFile()) {
@@ -119,7 +136,10 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
     }
     this.notes.setCreatingFolder(true);
 
-    if (targetNode.children && targetNode.children.filter((node) => node.createFolder).length > 0) {
+    if (
+      targetNode.children &&
+      targetNode.children.filter((node) => node.createFolder).length > 0
+    ) {
       return;
     }
 

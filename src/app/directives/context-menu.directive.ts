@@ -28,13 +28,10 @@ export class ContextMenuDirective {
     const factory = this.componentFactoryResolver.resolveComponentFactory(ContextMenuComponent);
     this.contextMenuComponentRef = this.viewContainerRef.createComponent(factory);
     this.contextMenuComponentRef.instance.items = this.contextMenuItems;
+    this.contextMenuComponentRef.instance.itemClicked.subscribe(() => this.closeContextMenu()); // Subscribe to the item clicked event
 
     const contextMenuElem = this.contextMenuComponentRef.location.nativeElement as HTMLElement;
     document.body.appendChild(contextMenuElem);
-
-    console.log('Context Menu Element:', contextMenuElem);
-    console.log('Context Menu Items:', this.contextMenuItems);
-
     // Set styles for positioning
     contextMenuElem.style.position = 'absolute';
     contextMenuElem.style.left = `${event.clientX}px`;

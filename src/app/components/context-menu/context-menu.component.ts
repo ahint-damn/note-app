@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ContextMenuItem } from '../../interfaces/ContextMenu';
 import { CommonModule } from '@angular/common';
 
@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 })
 export class ContextMenuComponent implements OnInit {
   @Input() items: ContextMenuItem[] = [];
+  @Output() itemClicked: EventEmitter<void> = new EventEmitter<void>();
 
   onItemClicked(item: ContextMenuItem): void {
     if (item.args !== undefined) {
@@ -18,6 +19,7 @@ export class ContextMenuComponent implements OnInit {
     } else {
       item.action();
     }
+    this.itemClicked.emit();
   }
 
   constructor() {}

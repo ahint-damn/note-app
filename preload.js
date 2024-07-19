@@ -26,5 +26,9 @@ contextBridge.exposeInMainWorld('electron', {
   createDirectoryByPath: (path) => new Promise((resolve) => {
     ipcRenderer.once('create-directory-by-path-response', () => resolve());
     ipcRenderer.send('create-directory-by-path', path);
+  }),
+  deleteNodeByPath: (path) => new Promise((resolve) => {
+    ipcRenderer.once('delete-node-by-path-response', () => resolve());
+    ipcRenderer.send('delete-node-by-path', path);
   })
 });

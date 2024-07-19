@@ -143,4 +143,20 @@ export class NotesService {
       }
     });
   }
+
+  //deleteNodeById
+  deleteNodeById = (id: string): void => {
+    const path = this.getNotePath(id);
+    if (this.isElectron()) {
+      window.electron.deleteNodeByPath(path);
+      this.toasts.show({title: 'Success', duration: 3, type: 'success', message: 'Item Deleted'});
+    }
+  }
+
+  deleteNodeByPath = (path: string): void => {
+    if (this.isElectron()) {
+      window.electron.deleteNodeByPath(path);
+    }
+  }
+
 }
