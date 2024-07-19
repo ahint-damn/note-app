@@ -15,11 +15,13 @@ import { CommonModule } from '@angular/common';
 import { AlertComponent } from './components/alert/alert.component';
 import { Alert } from './interfaces/Alert';
 import { AlertService } from './services/alert.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, ToolbarComponent, NoteComponent, SidebarComponent, 
-    ResizableDirective, ToastAreaComponent, FileTreeComponent, CommonModule, AlertComponent 
+    ResizableDirective, ToastAreaComponent, FileTreeComponent, CommonModule, 
+    AlertComponent
     ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

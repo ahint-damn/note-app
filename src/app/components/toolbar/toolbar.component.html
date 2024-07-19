@@ -6,11 +6,11 @@
             <button class="app-button control-btn" (click)="minimize()"></button>
             <button class="app-button control-btn" (click)="maximize()"></button>
         </div>
-        <div class="name">Quotient</div>
+        <div class="name">{{ title }}</div>
         <div class="items">
-            <button class="app-button" (click)="toggleTheme()" appTooltip="Change Theme"><i data-feather="sun" class="icon"></i></button>
-            <button class="app-button" (click)="goSettingsPage()" appTooltip="Settings"><i data-feather="settings" class="icon"></i></button>
-            <button class="app-button" (click)="goAccountPage()" appTooltip="Account"><i data-feather="user" class="icon"></i></button>
+            <button class="app-button" (click)="toggleTheme()" appTooltip="Change Theme" *ngIf="showOptions"><i data-feather="sun" class="icon"></i></button>
+            <button class="app-button" (click)="goSettingsPage()" appTooltip="Settings" *ngIf="showOptions"><i data-feather="settings" class="icon"></i></button>
+            <button class="app-button" (click)="goAccountPage()" appTooltip="Account" *ngIf="showOptions"><i data-feather="user" class="icon"></i></button>
         </div>
     </div>
 </div>

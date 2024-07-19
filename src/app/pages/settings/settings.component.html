@@ -1,6 +1,36 @@
-<div class="settings-wrapper">
+<div class="settings-wrapper" appResizable="right">
     <div class="left-side">
-        <h1>DEBUG</h1>
+        <div class="item" [ngClass]="{'selected':selectedOption == 'General'}" (click)="toggle('General')">General</div>
+        <div class="item" [ngClass]="{'selected':selectedOption == 'Appearance'}" (click)="toggle('Appearance')">Appearance</div>
+        <div class="item" [ngClass]="{'selected':selectedOption == 'Notifications'}" (click)="toggle('Notifications')">Notifications</div>
+        <div class="item" [ngClass]="{'selected':selectedOption == 'Privacy'}" (click)="toggle('Privacy')">Privacy</div>
+        <div class="item" [ngClass]="{'selected':selectedOption == 'Security'}" (click)="toggle('Security')">Security</div>
+        <div class="item" [ngClass]="{'selected':selectedOption == 'Help'}" (click)="toggle('Help')">Help</div>
     </div>
-    <div class="settings"></div>
+    <div class="settings">
+        <div *ngIf="selectedOption == 'General'">
+            <h4>App</h4>
+            <div class="divider"></div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Automatic Updates</h3>
+                    <p class="description">Enable automatic updates for the app</p>
+                </div>
+                <div class="option">
+                    <p-inputSwitch [(ngModel)]="settings.general.autoUpdate"></p-inputSwitch>
+                </div>
+            </div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Language</h3>
+                    <p class="description">Select the language for the app</p>
+                </div>
+                <div class="option">
+                    <p-dropdown [options]="languages" optionLabel="label" placeholder="Select a Language"
+                    [(ngModel)]="settings.general.language" [filter]="true"
+                    filterBy="name" ></p-dropdown>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

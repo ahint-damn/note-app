@@ -23,6 +23,7 @@
 
 <div class="popup dark" *ngIf="isPopup">
   <div class="popup-content">
+    <app-toolbar [showOptions]="false" title="Settings"></app-toolbar>
     <router-outlet></router-outlet>
   </div>
 </div>

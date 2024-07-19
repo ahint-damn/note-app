@@ -37,6 +37,7 @@
 }
 
 .items{
+  min-width: 100px;
   display:flex;
   flex-direction: row;
   gap:10px;

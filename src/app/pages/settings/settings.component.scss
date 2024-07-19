@@ -1,17 +1,71 @@
 @import '../../../vars.scss';
 .settings-wrapper{
     display: flex;
-    flex-direction: column;
-    height:100%;
+    flex-direction: row;
+    height: calc(100vh - 40px);
     width: 100%;
     .left-side{
         width:20%;
-        min-height:100%;
         min-width: 100px;
         background-color: $background-color;
+        padding:20px;
+        display:flex;
+        flex-direction: column;
+        gap:6px;
         border-right: 1px solid $border-color;
+        .item{
+            padding:5px 10px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            width:100%;
+            transition: all 0.2s ease-in-out;
+            color: $text-color;
+            &:hover{
+                background-color: $light-background-color;
+                cursor: pointer;
+            }
+        }
+        .selected{
+            background-color: $tertiary-color !important;
+            color: $primary-color;
+        }
     }
     .settings{
-
+        background-color: $dark-background-color;
+        width:80%;
+        padding:20px;
     }
+}
+
+.divider{
+    width:100%;
+    margin: 10px 10px 0 0;
+    height:1px;
+    background-color: $light-background-color
+}
+.setting{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 15px;
+    .text{
+        display:flex;
+        flex-direction: column;
+        gap:1px;
+        .description{
+            font-size: 0.9rem;
+            color: $subtle-text-color;
+            margin-bottom: 10px;
+        }
+    }
+    .option{
+        display:flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+}
+
+h4{
+    color: $subtle-text-color;
 }
