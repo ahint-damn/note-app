@@ -1,6 +1,6 @@
 <ul>
   <li *ngFor="let node of fileNodes">
-    <form *ngIf="node.createFile && creatingFile" (submit)="createFile(node)">
+    <form *ngIf="node.createFile && creatingFile" (submit)="createFile(node)" class="file-form">
       <input
         type="text"
         [(ngModel)]="node.name"
@@ -9,6 +9,7 @@
         placeholder="File"
         name="fileName"
       />
+      <p>.txt</p>
     </form>
     <form *ngIf="node.createFolder && creatingFolder" (submit)="createFolder(node)">
       <input

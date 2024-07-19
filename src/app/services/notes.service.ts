@@ -138,9 +138,9 @@ export class NotesService {
     const path = this.getNotePath(id);
     if (path && this.isElectron()) {
       console.log(`[i] Deleting node at path: ${path}`);
+      this.closeTabsRecursively(id);
       window.electron.deleteNodeByPath(path).then(() => {
         this.toasts.show({ title: 'Success', duration: 3, type: 'success', message: 'Item Deleted' });
-        this.nav.closeTabByNoteId(id);
         this.resetFileTree();
       });
     }
@@ -152,6 +152,40 @@ export class NotesService {
       window.electron.deleteNodeByPath(path).then(() => {
         this.resetFileTree();
       });
+    }
+  }
+
+  private closeTabsRecursively(id: string): void {
+    const findNodeById = (nodes: FileNode[], id: string): FileNode | null => {
+      for (const node of nodes) {
+        if (node.id === id) {
+          return node;
+        } else if (node.children) {
+          const found = findNodeById(node.children, id);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    const findAllChildNodes = (node: FileNode): FileNode[] => {
+      let nodes: FileNode[] = [];
+      if (node.children) {
+        node.children.forEach(child => {
+          nodes.push(child);
+          nodes = nodes.concat(findAllChildNodes(child));
+        });
+      }
+      return nodes;
+    };
+
+    const rootNode = findNodeById(this.fileNodesSubject.value, id);
+    if (rootNode) {
+      const allChildNodes = findAllChildNodes(rootNode);
+      allChildNodes.forEach(childNode => {
+        this.nav.closeTabByNoteId(childNode.id!);
+      });
+      this.nav.closeTabByNoteId(id);
     }
   }
 }

@@ -17,6 +17,17 @@ li{
     }
 }
 
+.file-form{
+    display:flex;
+    flex-direction: row;
+    gap:5px;
+    justify-content: center;
+    align-items: flex-end;
+    p{
+        margin-top:-4px;
+    }
+}
+
 .icon{
     width:16px;
     height:16px;
