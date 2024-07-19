@@ -1,4 +1,4 @@
-<div class="app-wrapper dark" *ngIf="!isPopup">
+<div class="app-wrapper dark" *ngIf="!isPopup" #appWrapper>
   <app-toolbar></app-toolbar>
   <div class="horizontal">
     <app-alert [alert]="alertFromService" *ngIf="showAlert" 
@@ -21,7 +21,7 @@
   <app-toast-area></app-toast-area>
 </div>
 
-<div class="popup dark" *ngIf="isPopup">
+<div class="popup dark" *ngIf="isPopup" #popupWrapper>
   <div class="popup-content">
     <app-toolbar [showOptions]="false" title="Settings" target="popup"></app-toolbar>
     <router-outlet></router-outlet>

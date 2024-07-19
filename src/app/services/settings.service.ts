@@ -8,7 +8,7 @@ export class SettingsService {
   defaultSettings: Settings = {
     general: {autoUpdate: true, language: 'en'},
     editor: {alwaysFocusNewTabs: true, showLineNumbers: true, fontSize: 14, fontFamily: 'Arial', stats: true},
-    appearance: {theme: 'dark', UIFontSize: 14, UIFontFamily: 'Arial', accentColor: '#ff5f5f'},
+    appearance: {theme: 'dark', UIFontSize: 18, UIFontFamily: 'Helvetica Neue', accentColor: '#ff5f5f'},
     notifications: {email: true, push: true, sms: true},
     privacy: {allowCookies: true, allowTracking: true, allowThirdParty: true},
     security: {twoFactor: true, encryption: false, usePassword: false}

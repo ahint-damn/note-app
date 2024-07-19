@@ -1,5 +1,18 @@
-import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
-import { NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  viewChild,
+} from '@angular/core';
+import {
+  NavigationEnd,
+  NavigationStart,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { ResizableDirective } from './directives/resizable.directive';
@@ -17,17 +30,28 @@ import { Alert } from './interfaces/Alert';
 import { AlertService } from './services/alert.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SettingsService } from './services/settings.service';
+import { Settings } from './interfaces/Settings';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ToolbarComponent, NoteComponent, SidebarComponent, 
-    ResizableDirective, ToastAreaComponent, FileTreeComponent, CommonModule, 
+  imports: [
+    RouterOutlet,
+    ToolbarComponent,
+    NoteComponent,
+    SidebarComponent,
+    ResizableDirective,
+    ToastAreaComponent,
+    FileTreeComponent,
+    CommonModule,
     AlertComponent,
-    ],
+  ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit, AfterViewInit {
+  @ViewChild('appWrapper') appWrapper!: ElementRef;
+  @ViewChild('popupWrapper') popupWrapper!: ElementRef;
+
   title = 'note-app';
   tabs: NavigationTab[] = [];
   activeTabId: number = 0;
@@ -38,77 +62,104 @@ export class AppComponent implements OnInit, AfterViewInit {
     acceptText: 'OK',
     rejectText: 'Cancel',
     dismissText: 'OK',
-    showClose: true
+    showClose: true,
   };
   showAlert: boolean = false;
-  
+  currentConfig!: Settings;
+
   constructor(
-    private router: Router, 
+    private router: Router,
     private settingsService: SettingsService,
-    private alertService: AlertService, 
-    private notesService: NotesService, 
-    private toastsService: ToastsService, 
+    private alertService: AlertService,
+    private notesService: NotesService,
+    private toastsService: ToastsService,
     private nav: NavigationService
   ) {
     this.router.events.subscribe((val) => {
-      if (val instanceof NavigationEnd){
-        if (val.url.includes('settings') || val.url.includes('account')){
+      if (val instanceof NavigationEnd) {
+        if (val.url.includes('settings') || val.url.includes('account')) {
           this.isPopup = true;
-        }
-        else{
+        } else {
           this.loadMainWindow();
           this.isPopup = false;
         }
       }
     });
+
+    this.settingsService.config$.subscribe((config: Settings) => {
+      this.currentConfig = config;
+      this.updateAppStyling();
+    });
   }
 
-  loadMainWindow(){
-    this.nav.getTabs().subscribe(tabs => {
+  updateAppStyling() {
+    if (!this.currentConfig) {
+      console.log(
+        'Failed when attempting to update app styling. Config not loaded!'
+      );
+      return;
+    }
+    if (this.appWrapper) {
+      this.appWrapper.nativeElement.style.fontFamily =
+        this.currentConfig.appearance.UIFontFamily;
+      this.appWrapper.nativeElement.style.fontSize =
+        this.currentConfig.appearance.UIFontSize + 'px';
+    }
+    if (this.popupWrapper) {
+      this.popupWrapper.nativeElement.style.fontFamily =
+        this.currentConfig.appearance.UIFontFamily;
+      this.popupWrapper.nativeElement.style.fontSize =
+        this.currentConfig.appearance.UIFontSize + 'px';
+    }
+  }
+
+  loadMainWindow() {
+    this.nav.getTabs().subscribe((tabs) => {
       this.tabs = tabs;
     });
 
-    this.nav.getActiveTabId().subscribe(activeTabId => {
+    this.nav.getActiveTabId().subscribe((activeTabId) => {
       this.activeTabId = activeTabId;
-      if (this.tabs[this.activeTabId] !== undefined){
+      if (this.tabs[this.activeTabId] !== undefined) {
         this.router.navigate([this.tabs[this.activeTabId].path]);
       }
     });
 
-    this.alertService.getAlert().subscribe(alert => {
+    this.alertService.getAlert().subscribe((alert) => {
       this.alertFromService = alert;
     });
 
-    this.alertService.getShowAlert().subscribe(showAlert => {
+    this.alertService.getShowAlert().subscribe((showAlert) => {
       this.showAlert = showAlert;
     });
   }
 
   isPopup: boolean = false;
 
-  alertConfirmed(){
+  alertConfirmed() {
     this.alertFromService.positiveResponse = true;
     this.alertService.setAlert(this.alertFromService);
     this.alertService.setShowAlert(false);
   }
 
-  alertCancelled(){
+  alertCancelled() {
     this.alertFromService.negativeResponse = true;
     this.alertService.setAlert(this.alertFromService);
     this.alertService.setShowAlert(false);
   }
 
-  closeTab(id: number){
+  closeTab(id: number) {
     this.nav.closeTab(id);
   }
 
   ngAfterViewInit(): void {
     feather.replace();
+    this.updateAppStyling();
   }
 
-  openTab(id:number){
+  openTab(id: number) {
     this.nav.setActiveTabId(id);
-    if (this.tabs[id] === undefined){
+    if (this.tabs[id] === undefined) {
       return;
     }
     this.router.navigate([this.tabs[id].path]);
@@ -117,11 +168,18 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.settingsService.loadConfigJson();
     if (this.notesService.checkIfElectron()) {
-      this.toastsService.show({duration:3, type: 'info', message: 'Electron'});
+      this.toastsService.show({
+        duration: 3,
+        type: 'info',
+        message: 'Electron',
+      });
       this.notesService.resetFileTree();
-    }
-    else{
-      this.toastsService.show({duration:3, type: 'info', message: 'Browser'});
+    } else {
+      this.toastsService.show({
+        duration: 3,
+        type: 'info',
+        message: 'Browser',
+      });
     }
     this.openTab(this.activeTabId);
   }
