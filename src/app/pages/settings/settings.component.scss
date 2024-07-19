@@ -1,0 +1,17 @@
+@import '../../../vars.scss';
+.settings-wrapper{
+    display: flex;
+    flex-direction: column;
+    height:100%;
+    width: 100%;
+    .left-side{
+        width:20%;
+        min-height:100%;
+        min-width: 100px;
+        background-color: $background-color;
+        border-right: 1px solid $border-color;
+    }
+    .settings{
+
+    }
+}

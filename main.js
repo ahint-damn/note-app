@@ -13,7 +13,7 @@ function createWindow() {
     frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: false, // Best practice to set nodeIntegration to false for security
+      nodeIntegration: false,
       contextIsolation: true,
     },
   });
@@ -23,6 +23,31 @@ function createWindow() {
   mainWindow.on('closed', function () {
     mainWindow = null;
   });
+}
+
+function createNewWindow(route) {
+  let newWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    minWidth: 600,
+    minHeight: 400,
+    frame: false,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  });
+
+  const newWindowUrl = `file://${__dirname}/dist/note-app/browser/index.html#/${route}`;
+  console.log(`[i] new window url: ${newWindowUrl}`);
+  newWindow.loadURL(newWindowUrl);
+
+  newWindow.on('closed', function () {
+    newWindow = null;
+  });
+
+  return newWindow;
 }
 
 app.on('ready', createWindow);
@@ -59,12 +84,10 @@ ipcMain.on('window-control', (event, arg) => {
   }
 });
 
-
-//Get Note Directory
+// Get Note Directory
 ipcMain.on('get-notes-dir', (event) => {
   event.sender.send('get-notes-dir-response', notesDir);
 });
-
 
 // Get Complete Directory, including subdirectories
 ipcMain.on('get-files', (event) => {
@@ -72,24 +95,23 @@ ipcMain.on('get-files', (event) => {
   event.sender.send('get-files-response', files);
 });
 
-//read notes by path
+// Read notes by path
 ipcMain.on('read-note-by-path', (event, arg) => {
   const notePath = path.join(notesDir, arg);
   const note = fs.readFileSync(notePath, 'utf-8');
   event.sender.send('read-note-by-path-response', note);
 });
 
-//save notes by path
+// Save notes by path
 ipcMain.on('save-note-by-path', (event, arg) => {
   const notePath = path.join(notesDir, arg.path);
   fs.writeFileSync(notePath, arg.content);
   event.sender.send('save-note-by-path-response');
 });
 
-//create directory by path
+// Create directory by path
 ipcMain.on('create-directory-by-path', (event, arg) => {
   const directoryPath = path.join(notesDir, arg);
-  //check if directory exists
   if (fs.existsSync(directoryPath)) {
     event.sender.send('create-directory-by-path-response', 'Directory already exists');
     return;
@@ -98,15 +120,19 @@ ipcMain.on('create-directory-by-path', (event, arg) => {
   event.sender.send('create-directory-by-path-response');
 });
 
-//delete-node-by-path (file or directory)
+// Delete node by path (file or directory)
 ipcMain.on('delete-node-by-path', (event, arg) => {
   const nodePath = path.join(notesDir, arg);
-  //check if node exists
-  if (!fs.existsSync(nodePath
-  )) {
+  if (!fs.existsSync(nodePath)) {
     event.sender.send('delete-node-by-path-response', 'Node does not exist');
     return;
   }
   fs.rmSync(nodePath, { recursive: true });
   event.sender.send('delete-node-by-path-response');
+});
+
+// Open new window with route
+ipcMain.on('open-in-new-window', (event, route) => {
+  createNewWindow(route);
+  event.sender.send('open-in-new-window-response');
 });

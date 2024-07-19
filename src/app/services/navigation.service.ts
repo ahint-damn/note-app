@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NavigationTab } from '../interfaces/NavigationTab';
-
 @Injectable({
   providedIn: 'root'
 })
 export class NavigationService {
+
+  private isElectron = (): boolean => {
+    return !!(window && window.electron);
+  };
+
 
   private tabs: NavigationTab[] = [];
   private tabsSubject: BehaviorSubject<NavigationTab[]> = new BehaviorSubject<NavigationTab[]>(this.tabs);
@@ -64,6 +68,13 @@ export class NavigationService {
       } else if (this.activeTabId > id) {
         this.setActiveTabId(this.activeTabId - 1);
       }
+    }
+  }
+
+  openInNewWindow(url: string): void {
+    if (this.isElectron()) {
+      console.log('openInNewWindow', url);
+      window.electron.openInNewWindow(url);
     }
   }
 

@@ -6,6 +6,7 @@ interface ElectronAPI {
   saveNoteByPath(path: string, content: string): void;
   createDirectoryByPath(path: string): void;
   deleteNodeByPath(path: string): Promise<void>;
+  openInNewWindow(url: string): void;
 }
 
 interface Window {

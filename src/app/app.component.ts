@@ -1,5 +1,5 @@
 import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { ResizableDirective } from './directives/resizable.directive';
@@ -15,7 +15,6 @@ import { CommonModule } from '@angular/common';
 import { AlertComponent } from './components/alert/alert.component';
 import { Alert } from './interfaces/Alert';
 import { AlertService } from './services/alert.service';
-
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -47,6 +46,21 @@ export class AppComponent implements OnInit, AfterViewInit {
     private toastsService: ToastsService, 
     private nav: NavigationService
   ) {
+    this.router.events.subscribe((val) => {
+      if (val instanceof NavigationEnd){
+        console.log(val);
+        if (val.url.includes('settings') || val.url.includes('account')){
+          this.isPopup = true;
+        }
+        else{
+          this.loadMainWindow();
+          this.isPopup = false;
+        }
+      }
+    });
+  }
+
+  loadMainWindow(){
     this.nav.getTabs().subscribe(tabs => {
       this.tabs = tabs;
     });
@@ -66,6 +80,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.showAlert = showAlert;
     });
   }
+
+  isPopup: boolean = false;
 
   alertConfirmed(){
     this.alertFromService.positiveResponse = true;

@@ -30,5 +30,9 @@ contextBridge.exposeInMainWorld('electron', {
   deleteNodeByPath: (path) => new Promise((resolve) => {
     ipcRenderer.once('delete-node-by-path-response', () => resolve());
     ipcRenderer.send('delete-node-by-path', path);
+  }),
+  openInNewWindow: (url) => new Promise((resolve) => {
+    ipcRenderer.once('open-in-new-window-response', () => resolve());
+    ipcRenderer.send('open-in-new-window', url);
   })
 });
