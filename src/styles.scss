@@ -8,6 +8,7 @@ body{
     margin: 0;
     color: $text-color;
     padding: 0;
+    user-select: none;
     box-sizing: border-box;
 }
 
@@ -48,4 +49,8 @@ h1, h2, h3, h4, h5, h6, p, a {
     .p-button-label{
         font-weight: 500;
     }
+}
+
+input, textarea{
+  user-select: auto !important;
 }

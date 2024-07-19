@@ -196,6 +196,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
   clicked(node: FileNode): void {
     if (!node.extension) {
       this.toggleNode(node);
+      this.notes.resetFileTree();
     } else {
       const tab: NavigationTab = {
         Id: 0,
