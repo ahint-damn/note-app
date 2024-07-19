@@ -49,3 +49,19 @@ ul{
         padding-left: 10px;
     }
 }
+
+
+
+input{
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    padding: 4px;
+    background-color: $light-background-color;
+    color: $text-color;
+    font-size: 1rem;
+    border: 1px solid $border-color;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top:4px;
+}

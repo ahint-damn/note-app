@@ -21,7 +21,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   standalone: true,
   imports: [RouterOutlet, ToolbarComponent, NoteComponent, SidebarComponent, 
     ResizableDirective, ToastAreaComponent, FileTreeComponent, CommonModule, 
-    AlertComponent
+    AlertComponent,
     ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

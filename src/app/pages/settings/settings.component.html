@@ -2,6 +2,7 @@
     <!-- <div class="left-side" appResizable="right"> -->
     <div class="left-side">
         <div class="item" [ngClass]="{'selected':selectedOption == 'General'}" (click)="toggle('General')">General</div>
+        <div class="item" [ngClass]="{'selected':selectedOption == 'Editor'}" (click)="toggle('Editor')">Editor</div>
         <div class="item" [ngClass]="{'selected':selectedOption == 'Appearance'}" (click)="toggle('Appearance')">Appearance</div>
         <div class="item" [ngClass]="{'selected':selectedOption == 'Notifications'}" (click)="toggle('Notifications')">Notifications</div>
         <div class="item" [ngClass]="{'selected':selectedOption == 'Privacy'}" (click)="toggle('Privacy')">Privacy</div>
@@ -29,6 +30,89 @@
                 <div class="option">
                     <p-dropdown [options]="languages" optionLabel="label" placeholder="Select a Language"
                     [(ngModel)]="settings.general.language" optionValue="value"></p-dropdown>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="selectedOption == 'Editor'">
+            <h4>Editor</h4>
+            <div class="divider"></div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Font Size</h3>
+                    <p class="description">The font size for the editor</p>
+                </div>
+                <div class="option">
+                    <p-inputNumber [(ngModel)]="settings.editor.fontSize" [min]="8" [max]="24"
+                    [showButtons]="true" inputId="integeronly" [showButtons]="false"></p-inputNumber>
+                </div>
+            </div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Font Family</h3>
+                    <p class="description">The font family for the editor</p>
+                </div>
+                <div class="option">
+                    <input type="text" pInputText [(ngModel)]="settings.editor.fontFamily">
+                </div>
+            </div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Show Line Numbers</h3>
+                    <p class="description">Show line numbers in the editor</p>
+                </div>
+                <div class="option">
+                    <p-inputSwitch [(ngModel)]="settings.editor.showLineNumbers"></p-inputSwitch>
+                </div>
+            </div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Always Focus New Tabs</h3>
+                    <p class="description">Always focus new tabs in the editor</p>
+                </div>
+                <div class="option">
+                    <p-inputSwitch [(ngModel)]="settings.editor.alwaysFocusNewTabs"></p-inputSwitch>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="selectedOption == 'Appearance'">
+            <h4>Interface Appearance</h4>
+            <div class="divider"></div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Theme</h3>
+                    <p class="description">The theme for the app UI</p>
+                </div>
+                <div class="option">
+                    <p-dropdown [options]="themes" optionLabel="label" placeholder="Select a Theme"
+                    [(ngModel)]="settings.appearance.theme" optionValue="value"></p-dropdown>
+                </div>
+            </div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Font Size</h3>
+                    <p class="description">The font size for the app UI</p>
+                </div>
+                <div class="option">
+                    <p-inputNumber [(ngModel)]="settings.appearance.UIFontSize" [min]="8" [max]="24"
+                    [showButtons]="true" inputId="integeronly" [showButtons]="false"></p-inputNumber>
+                </div>
+            </div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Font Family</h3>
+                    <p class="description">The font family for the app UI</p>
+                </div>
+                <div class="option">
+                    <input type="text" pInputText [(ngModel)]="settings.appearance.UIFontFamily">
+                </div>
+            </div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Accent Color</h3>
+                    <p class="description">The accent color for the app UI</p>
+                </div>
+                <div class="option">
+                    <p-colorPicker [(ngModel)]="settings.appearance.accentColor"></p-colorPicker>
                 </div>
             </div>
         </div>

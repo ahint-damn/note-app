@@ -1,4 +1,5 @@
 @import "primeng/resources/primeng.css";
+@import "primeng/resources/themes/viva-dark/theme.css";
 @import './custom-ng.css';
 @import './vars.scss'; 
 body{
@@ -41,21 +42,6 @@ h1, h2, h3, h4, h5, h6, p, a {
         fill: currentColor;
     }
 }
-
-input{
-    border: none;
-    outline: none;
-    border-radius: 6px;
-    padding: 4px;
-    background-color: $light-background-color;
-    color: $text-color;
-    font-size: 1rem;
-    border: 1px solid $border-color;
-    width: 100%;
-    box-sizing: border-box;
-    margin-top:4px;
-}
-
 .p-button{
     padding:8px 10px;
     font-size: small;
