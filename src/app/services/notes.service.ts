@@ -111,6 +111,7 @@ export class NotesService {
   saveNoteByPath(path: string, content: string): void {
     if (this.isElectron()) {
       try {
+        console.log(`[i] Saving note at path: ${path}`);
         window.electron.saveNoteByPath(path, content);
       } catch {
         this.toasts.show({ title: 'Error', duration: 3, type: 'error', message: 'Error saving/creating file' });

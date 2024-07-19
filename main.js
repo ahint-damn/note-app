@@ -129,15 +129,37 @@ ipcMain.on('get-files', (event) => {
 
 // Read notes by path
 ipcMain.on('read-note-by-path', (event, arg) => {
-  const notePath = path.join(notesDir, arg);
-  const note = fs.readFileSync(notePath, 'utf-8');
-  event.sender.send('read-note-by-path-response', note);
+  try{
+    const notePath = path.join(notesDir, arg);
+    if (!fs.existsSync(notePath
+    )) {
+      console.log(`[i] note does not exist: ${notePath}`);
+      event.sender.send('read-note-by-path-response', 'Note does not exist');
+      return;
+    }
+    const note = fs.readFileSync(notePath, 'utf-8');
+    console.log(`[i] note read: ${notePath}`);
+    event.sender.send('read-note-by-path-response', note);
+  }
+  catch{
+    console.log('Error reading note');
+    event.sender.send('read-note-by-path-response', 'Error reading note');
+    return;
+  }
 });
 
 // Save notes by path
 ipcMain.on('save-note-by-path', (event, arg) => {
-  const notePath = path.join(notesDir, arg.path);
-  fs.writeFileSync(notePath, arg.content);
+  try{
+    const notePath = path.join(notesDir, arg.path);
+    fs.writeFileSync(notePath, arg.content);
+    console.log(`[i] note saved: ${notePath}`);
+  }
+  catch{
+    console.log('Error saving note');
+    event.sender.send('save-note-by-path-response', 'Error saving note');
+    return;
+  }
   event.sender.send('save-note-by-path-response');
 });
 

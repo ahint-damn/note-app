@@ -43,7 +43,6 @@ export class SettingsComponent implements OnInit {
 
   constructor(private settingsService: SettingsService, 
     private toast: ToastsService) {
-    this.settings = this.settingsService.defaultSettings;
     this.settingsService.config$.subscribe((settings: Settings) => {
       this.settings = settings;
     });
