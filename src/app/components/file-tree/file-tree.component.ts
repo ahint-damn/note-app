@@ -10,11 +10,14 @@ import { NotesService } from '../../services/notes.service';
 import { ToastsService } from '../../services/toasts.service';
 import { ContextMenuDirective } from '../../directives/context-menu.directive';
 import { ContextMenuItem } from '../../interfaces/ContextMenu';
+import { AlertService } from '../../services/alert.service';
+import { Alert } from '../../interfaces/Alert';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-file-tree',
   standalone: true,
-  imports: [CommonModule, FormsModule, ContextMenuDirective],
+  imports: [CommonModule, FormsModule, ContextMenuDirective, InputTextModule],
   templateUrl: './file-tree.component.html',
   styleUrls: ['./file-tree.component.scss'],
 })
@@ -27,7 +30,8 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
     private rtr: Router,
     private nav: NavigationService,
     private notes: NotesService,
-    private toasts: ToastsService
+    private toasts: ToastsService,
+    private alertService: AlertService
   ) {
     this.notes.creatingFile$.subscribe((creatingFile) => {
       this.creatingFile = creatingFile;
@@ -55,7 +59,6 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       );
     }
     else{
-
       contextMenu.push(
         {
           label: 'Create Folder',
@@ -76,8 +79,22 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       {
         label: 'Delete',
         action: () => {
-          this.notes.deleteNodeById(node.id!);
-          this.notes.resetFileTree();
+          // CALL AN ALERT HERE
+          this.alertService.show({
+            title: 'Delete Confirmation',
+            message: `Are you sure you want to delete ${node.name}?`,
+            confirm: true,
+            acceptText: 'Yes',
+            rejectText: 'No',
+            dismissText: 'Cancel',
+          });
+
+          this.alertService.getAlert().subscribe(alert => {
+            if (alert.positiveResponse) {
+              this.notes.deleteNodeById(node.id!);
+              this.notes.resetFileTree();
+            }
+          });
         },
       }
     );

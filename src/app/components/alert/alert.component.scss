@@ -1,0 +1,55 @@
+@import '../../../vars.scss';
+
+.alert-wrapper{
+    width:100vw;
+    z-index:99999;
+    height:calc(100vh - 41px);
+    position:absolute;
+    top:42px;
+    left:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    backdrop-filter: blur(2px);
+    .alert{
+        min-width:400px;
+        height:200px;
+        background-color: $background-color;
+        border: 1px solid $border-color;
+        border-radius:5px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        display:flex;
+        padding:20px;
+        justify-content: space-between;
+        flex-direction:column;
+        .main-area{
+            display:flex;
+            flex-direction: row;
+            width:100%;
+            justify-content: space-between;
+            .close{
+
+            }
+            .text{
+                max-width: 90%;
+                word-wrap: break-word;
+                display:flex;
+                flex-direction:column;
+                gap:10px;
+                h2{
+                    color:$primary-color;
+                    margin-bottom: 20px;
+                }
+            }
+        }
+        .buttons{
+            justify-self: end;
+            align-self: end;
+            display:flex;
+            flex-direction:row;
+            justify-content: end;
+            align-items: center;
+            gap:10px;
+        }
+    }
+}

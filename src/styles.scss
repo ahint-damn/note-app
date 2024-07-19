@@ -1,3 +1,5 @@
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
 @import './vars.scss'; 
 body{
     background-color: $background-color;
@@ -13,7 +15,7 @@ h1, h2, h3, h4, h5, h6, p, a {
     font-weight: 400;
 }
 
-button{
+.app-button{
     border: none;
     outline: none;
     display:flex;
@@ -43,12 +45,21 @@ button{
 input{
     border: none;
     outline: none;
+    border-radius: 6px;
     padding: 4px;
     background-color: $light-background-color;
     color: $text-color;
     font-size: 1rem;
+    border: 1px solid $border-color;
     width: 100%;
     box-sizing: border-box;
     margin-top:4px;
-    border-bottom: 1px solid $tertiary-color;
+}
+
+.p-button{
+    padding:8px 10px;
+    font-size: small;
+    .p-button-label{
+        font-weight: 500;
+    }
 }

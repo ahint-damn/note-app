@@ -1,9 +1,8 @@
-import { AfterViewChecked, AfterViewInit, Component } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { ResizableDirective } from './directives/resizable.directive';
-import { OnInit } from '@angular/core';
 import { NotesService } from './services/notes.service';
 import { ToastAreaComponent } from './components/toast-area/toast-area.component';
 import { ToastsService } from './services/toasts.service';
@@ -13,12 +12,15 @@ import { NoteComponent } from './pages/note/note.component';
 import { NavigationTab } from './interfaces/NavigationTab';
 import { NavigationService } from './services/navigation.service';
 import { CommonModule } from '@angular/common';
+import { AlertComponent } from './components/alert/alert.component';
+import { Alert } from './interfaces/Alert';
+import { AlertService } from './services/alert.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, ToolbarComponent, NoteComponent, SidebarComponent, 
-    ResizableDirective, ToastAreaComponent, FileTreeComponent, CommonModule 
+    ResizableDirective, ToastAreaComponent, FileTreeComponent, CommonModule, AlertComponent 
     ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -27,8 +29,24 @@ export class AppComponent implements OnInit, AfterViewInit {
   title = 'note-app';
   tabs: NavigationTab[] = [];
   activeTabId: number = 0;
+  alertFromService: Alert = {
+    title: '',
+    message: '',
+    confirm: false,
+    acceptText: 'OK',
+    rejectText: 'Cancel',
+    dismissText: 'OK',
+    showClose: true
+  };
+  showAlert: boolean = false;
   
-  constructor(private router: Router, private notesService: NotesService, private toastsService: ToastsService, private nav: NavigationService) {
+  constructor(
+    private router: Router, 
+    private alertService: AlertService, 
+    private notesService: NotesService, 
+    private toastsService: ToastsService, 
+    private nav: NavigationService
+  ) {
     this.nav.getTabs().subscribe(tabs => {
       this.tabs = tabs;
     });
@@ -39,7 +57,28 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.router.navigate([this.tabs[this.activeTabId].path]);
       }
     });
-    // this.notesService.saveNoteByPath('Lame Notes/Test/lamenote.txt', 'test');
+
+    this.alertService.getAlert().subscribe(alert => {
+      this.alertFromService = alert;
+    });
+
+    this.alertService.getShowAlert().subscribe(showAlert => {
+      this.showAlert = showAlert;
+    });
+  }
+
+  alertConfirmed(){
+    this.alertFromService.positiveResponse = true;
+    this.alertService.setAlert(this.alertFromService);
+    console.log(this.alertFromService);
+    this.alertService.setShowAlert(false);
+  }
+
+  alertCancelled(){
+    this.alertFromService.negativeResponse = true;
+    this.alertService.setAlert(this.alertFromService);
+    console.log(this.alertFromService);
+    this.alertService.setShowAlert(false);
   }
 
   closeTab(id: number){

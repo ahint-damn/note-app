@@ -4,57 +4,56 @@ import { BehaviorSubject } from 'rxjs';
 import { ToastsService } from './toasts.service';
 import { NavigationService } from './navigation.service';
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class NotesService {
   constructor(private toasts: ToastsService, private nav: NavigationService) {}
 
-  //observable statuses
+  // Observable statuses
   private creatingFolderSubject = new BehaviorSubject<boolean>(false);
   creatingFolder$ = this.creatingFolderSubject.asObservable();
   private creatingFileSubject = new BehaviorSubject<boolean>(false);
   creatingFile$ = this.creatingFileSubject.asObservable();
 
-  //observable file Nodes
-  private fileNodes: FileNode[] = [];
+  // Observable file Nodes
   private fileNodesSubject = new BehaviorSubject<FileNode[]>([]);
   fileNodes$ = this.fileNodesSubject.asObservable();
-  
+
   // Check if the app is running in Electron
   private isElectron = (): boolean => {
     return !!(window && window.electron);
   };
 
-  //change status
-  setCreatingFolder = (status: boolean): void => {
+  // Change status
+  setCreatingFolder(status: boolean): void {
     this.creatingFolderSubject.next(status);
-  };
+  }
 
-  setCreatingFile = (status: boolean): void => {
+  setCreatingFile(status: boolean): void {
     this.creatingFileSubject.next(status);
-  };
+  }
 
-  //get status
-  getCreatingFolder = (): boolean => {
+  // Get status
+  getCreatingFolder(): boolean {
     return this.creatingFolderSubject.value;
-  };
+  }
 
-  getCreatingFile = (): boolean => {
+  getCreatingFile(): boolean {
     return this.creatingFileSubject.value;
-  };
+  }
 
-  checkIfElectron = (): boolean => {
+  checkIfElectron(): boolean {
     return this.isElectron();
-  };
+  }
 
-  getFileTree = (): FileNode[] => {
-    if (this.fileNodes.length === 0) {
+  // Get file tree
+  getFileTree(): FileNode[] {
+    if (this.fileNodesSubject.value.length === 0) {
       this.resetFileTree();
     }
-    return this.fileNodes;
-  };
+    return this.fileNodesSubject.value;
+  }
 
   resetFileTree(): Promise<string[]> {
     this.setCreatingFile(false);
@@ -64,8 +63,7 @@ export class NotesService {
         window.electron.resetFileTree().then(files => {
           if (files) {
             const tree = buildFileTree(files);
-            this.fileNodes = tree;
-            this.fileNodesSubject.next(this.fileNodes);
+            this.fileNodesSubject.next(tree);
             resolve(files);
           }
         });
@@ -75,33 +73,29 @@ export class NotesService {
     });
   }
 
-  recursiveSearch = (node: FileNode, id: string): FileNode | null => {
-    if (node.id === id) {
-      return node;
-    }
-    if (node.children) {
-      for (const child of node.children) {
-        const found = this.recursiveSearch(child, id);
-        if (found) {
-          return found;
+  getNotePath(id: string): string {
+    const findNodeById = (nodes: FileNode[], id: string): FileNode | null => {
+      for (const node of nodes) {
+        if (node.id === id) {
+          return node;
+        } else if (node.children) {
+          const found = findNodeById(node.children, id);
+          if (found) return found;
         }
       }
-    }
-    return null;
-  };
+      return null;
+    };
 
-  getNotePath = (id: string): string => {
-    const fileNode = this.fileNodes.find(node => node.id === id) || this.fileNodes.map(node => this.recursiveSearch(node, id)).find(node => node !== null);
-    
+    const fileNode = findNodeById(this.fileNodesSubject.value, id);
     if (fileNode) {
       return fileNode.path || '';
     }
     console.log(`[!] No file path found for ${id}`);
     return '';
-  };
+  }
 
-  readNoteByPath = (path: string): Promise<string> => {
-    return new Promise((resolve, reject) => {
+  readNoteByPath(path: string): Promise<string> {
+    return new Promise((resolve) => {
       if (this.isElectron()) {
         window.electron.readNoteByPath(path).then(content => {
           resolve(content || '');
@@ -110,31 +104,26 @@ export class NotesService {
         resolve('');
       }
     });
-  };
+  }
 
-  saveNoteByPath = (path: string, content: string): void => {
+  saveNoteByPath(path: string, content: string): void {
     if (this.isElectron()) {
-      try{
+      try {
         window.electron.saveNoteByPath(path, content);
-        // this.toasts.show({title: 'Success', duration: 3, type: 'success', message: 'File created'});
+      } catch {
+        this.toasts.show({ title: 'Error', duration: 3, type: 'error', message: 'Error saving/creating file' });
       }
-      catch{
-        this.toasts.show({title: 'Error', duration: 3, type: 'error', message: 'Error saving / creating file'});
-      }
-
     }
-  };
-  
-  createDirectoryByPath = (path: string): void => {
+  }
+
+  createDirectoryByPath(path: string): void {
     if (this.isElectron()) {
       window.electron.createDirectoryByPath(path);
     }
-  };
+  }
 
-
-  //getNotesDir
-  getNotesDir = (): Promise<string | null> => {
-    return new Promise((resolve, reject) => {
+  getNotesDir(): Promise<string | null> {
+    return new Promise((resolve) => {
       if (this.isElectron()) {
         window.electron.getNotesDir().then(dir => {
           resolve(dir);
@@ -145,20 +134,24 @@ export class NotesService {
     });
   }
 
-  //deleteNodeById
-  deleteNodeById = (id: string): void => {
+  deleteNodeById(id: string): void {
     const path = this.getNotePath(id);
-    if (this.isElectron()) {
-      window.electron.deleteNodeByPath(path);
-      this.toasts.show({title: 'Success', duration: 3, type: 'success', message: 'Item Deleted'});
-      this.nav.closeTabByNoteId(id);
+    if (path && this.isElectron()) {
+      console.log(`[i] Deleting node at path: ${path}`);
+      window.electron.deleteNodeByPath(path).then(() => {
+        this.toasts.show({ title: 'Success', duration: 3, type: 'success', message: 'Item Deleted' });
+        this.nav.closeTabByNoteId(id);
+        this.resetFileTree();
+      });
     }
   }
 
-  deleteNodeByPath = (path: string): void => {
+  deleteNodeByPath(path: string): void {
     if (this.isElectron()) {
-      window.electron.deleteNodeByPath(path);
+      console.log(`[i] Deleting node at path: ${path}`);
+      window.electron.deleteNodeByPath(path).then(() => {
+        this.resetFileTree();
+      });
     }
   }
-
 }

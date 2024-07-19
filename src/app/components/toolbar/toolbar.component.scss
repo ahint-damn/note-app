@@ -2,13 +2,13 @@
 
 .toolbar {
   width:100%;
+  min-height: 20px;
   border-bottom: 1px solid $border-color;
 }
 
 .drag-region {
   -webkit-app-region: drag;
   width: 100%;
-  height:20px;
   display: flex;
   padding:10px 0;
   justify-content: space-between;
@@ -24,7 +24,7 @@
   align-items: center;
 }
 
-.buttons button{
+.control-btn{
   -webkit-app-region: no-drag;
   width: 12px !important;
   height: 12px !important;

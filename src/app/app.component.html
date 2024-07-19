@@ -1,13 +1,16 @@
 <div class="app-wrapper dark">
   <app-toolbar></app-toolbar>
   <div class="horizontal">
+    <app-alert [alert]="alertFromService" *ngIf="showAlert" 
+    (cancelEvent)="alertCancelled()" (confirmEvent)="alertConfirmed()"></app-alert>
     <app-sidebar></app-sidebar>
     <div class="main-area">
       <div class="tabs">
+        <!-- TODO: Add PLUS Button -->
         <div class="tab" *ngFor="let tab of tabs" [class.active]="tab.Id === activeTabId" (click)="openTab(tab.Id)">
           <img src="icons/{{tab.icon}}.svg" class="icon" *ngIf="tab.icon"/>
           <p>{{tab.title}}</p>
-          <button (click)="closeTab(tab.Id)"><img src="icons/x.svg" class="icon close" /></button>
+          <button class="app-button" (click)="closeTab(tab.Id)"><img src="icons/x.svg" class="icon close" /></button>
         </div>
       </div>
       <div class="tab-area">

@@ -1,0 +1,18 @@
+<div class="alert-wrapper">
+    <div class="alert">
+        <div class="main-area">
+            <div class="text">
+                <h2>{{ alert.title }}</h2>
+                <p>{{ alert.message }}</p>
+            </div>
+            <div class="close" *ngIf="alert.showClose">
+                <button (click)="cancel()" class="app-button"><img src="icons/x.svg" class="icon" /></button>
+            </div>
+        </div>
+        <div class="buttons">
+            <p-button [label]="alert.dismissText" (onClick)="cancel()" *ngIf="!alert.confirm"></p-button>
+            <p-button [label]="alert.rejectText" (onClick)="cancel()" [outlined]="true" severity="secondary" *ngIf="alert.confirm"></p-button>
+            <p-button [label]="alert.acceptText" *ngIf="alert.confirm" (onClick)="accept()"></p-button>
+        </div>
+    </div>
+</div>

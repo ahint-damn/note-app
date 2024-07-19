@@ -2,15 +2,15 @@
 <div class="toolbar">
     <div class="drag-region">
         <div class="buttons">
-            <button (click)="close()" class="close-btn"></button>
-            <button (click)="minimize()" class="minimise-btn"></button>
-            <button (click)="maximize()" class="maximise-btn"></button>
+            <button class="app-button control-btn" (click)="close()"></button>
+            <button class="app-button control-btn" (click)="minimize()"></button>
+            <button class="app-button control-btn" (click)="maximize()"></button>
         </div>
         <div class="name">Quotient</div>
         <div class="items">
-            <button (click)="toggleTheme()" appTooltip="Change Theme"><i data-feather="sun" class="icon"></i></button>
-            <button (click)="goSettingsPage()" appTooltip="Settings"><i data-feather="settings" class="icon"></i></button>
-            <button (click)="goAccountPage()" appTooltip="Account"><i data-feather="user" class="icon"></i></button>
+            <button class="app-button" (click)="toggleTheme()" appTooltip="Change Theme"><i data-feather="sun" class="icon"></i></button>
+            <button class="app-button" (click)="goSettingsPage()" appTooltip="Settings"><i data-feather="settings" class="icon"></i></button>
+            <button class="app-button" (click)="goAccountPage()" appTooltip="Account"><i data-feather="user" class="icon"></i></button>
         </div>
     </div>
 </div>
