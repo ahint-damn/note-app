@@ -22,8 +22,7 @@
     </form>
     <div
       class="area"
-      (contextmenu)="contextMenu($event)"
-      [appContextMenu]="folderRightClickContextMenu"
+      [appContextMenu]="getContextMenu(node)"
       (click)="clicked(node)"
       [ngClass]="{ 'offset': node.extension }"
       *ngIf="!(node.name === '.DS_Store') && !node.createFile && !node.createFolder"

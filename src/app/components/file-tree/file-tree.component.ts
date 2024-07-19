@@ -23,21 +23,6 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
   creatingFolder: boolean = false;
   creatingFile: boolean = false;
   
-  folderRightClickContextMenu: ContextMenuItem[] = [
-    {
-      label: 'Create Folder',
-      action: () => {
-        console.log('Create Folder action triggered');
-      },
-    },
-    {
-      label: 'Create File',
-      action: () => {
-        console.log('Create File action triggered');
-      },
-    },
-  ];
-
   constructor(
     private rtr: Router,
     private nav: NavigationService,
@@ -51,6 +36,42 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       this.creatingFolder = creatingFolder;
     });
   }
+  
+  getContextMenu(node: FileNode): ContextMenuItem[] {
+    if (node.createFolder || node.createFile) {
+      return [];
+    }
+
+    if (node.extension) {
+      const contextMenu: ContextMenuItem[] = [
+        {
+          label: 'Open',
+          action: () => {
+            this.clicked(node);
+          },
+        },
+      ];
+      return contextMenu;
+    }
+
+    const contextMenu: ContextMenuItem[] = [
+      {
+        label: 'Create Folder',
+        action: () => {
+          this.createFolderNode(node);
+        },
+      },
+      {
+        label: 'Create File',
+        action: () => {
+          this.createFileNode(node);
+        },
+      },
+    ];
+    return contextMenu;
+  }
+      
+
 
   ngAfterViewInit(): void {
     feather.replace();
@@ -60,10 +81,36 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
 
   contextMenu(event: MouseEvent): void {
     console.log('EVENT', event);
-    // this.addNodeToTree(node); // Commented out as it's not used
   }
 
-  addNodeToTree(targetNode: FileNode): void {
+  createFileNode(targetNode: FileNode): void {
+    if (this.notes.getCreatingFile()) {
+      return;
+    }
+
+    if (this.notes.getCreatingFolder()) {
+      this.notes.setCreatingFolder(false);
+    }
+    this.notes.setCreatingFile(true);
+    
+    if (targetNode.children && targetNode.children.filter((node) => node.createFile).length > 0) {
+      return;
+    }
+
+    if (!targetNode.children) {
+      targetNode.children = [];
+    }
+    const newNodePath = `${targetNode.path}/${targetNode.name}`;
+    targetNode.children.push({
+      name: '',
+      children: [],
+      isExpanded: false,
+      icon: 'chevron-right',
+      createFile: true,
+    });
+  }
+
+  createFolderNode(targetNode: FileNode): void {
     if (this.notes.getCreatingFolder()) { 
       return;
     }

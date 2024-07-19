@@ -1,4 +1,5 @@
 export interface ContextMenuItem {
   label: string;
-  action: () => void;
+  action: (args?: any) => void;
+  args?: any;
 }

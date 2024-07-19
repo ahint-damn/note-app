@@ -13,7 +13,11 @@ export class ContextMenuComponent implements OnInit {
   @Input() items: ContextMenuItem[] = [];
 
   onItemClicked(item: ContextMenuItem): void {
-    item.action();
+    if (item.args !== undefined) {
+      item.action(item.args);
+    } else {
+      item.action();
+    }
   }
 
   constructor() {}
@@ -23,5 +27,4 @@ export class ContextMenuComponent implements OnInit {
       console.log('CONTEXT MENU LOADED');
     }
   }
-
 }
