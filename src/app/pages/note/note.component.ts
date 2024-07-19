@@ -98,8 +98,6 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
   updateRawContent(event: any, index: number) {
     if (index >= 0 && index < this.lines.length) {
       this.lines[index].raw = event.target.innerText;
-      console.log(this.lines[index].raw);
-      console.log(this.lines);
     }
    this.updateStats();
   }

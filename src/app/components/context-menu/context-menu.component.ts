@@ -25,8 +25,5 @@ export class ContextMenuComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    for (const item of this.items) {
-      console.log('CONTEXT MENU LOADED');
-    }
   }
 }

@@ -90,10 +90,6 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
 
   ngOnInit(): void {}
 
-  contextMenu(event: MouseEvent): void {
-    console.log('EVENT', event);
-  }
-
   createFileNode(targetNode: FileNode): void {
     if (this.notes.getCreatingFile()) {
       return;
@@ -191,7 +187,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
     const path = this.getFullPath(node);
     this.notes.createDirectoryByPath(path);
     this.notes.resetFileTree();
-    console.log(`Creating folder at ${path}`);
+    console.log(`[i] Creating folder at ${path}`);
   }
 
   createFile(node: FileNode) {

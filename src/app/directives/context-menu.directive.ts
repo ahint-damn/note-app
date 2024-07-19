@@ -20,7 +20,6 @@ export class ContextMenuDirective {
 
   @HostListener('contextmenu', ['$event'])
   onRightClick(event: MouseEvent): void {
-    console.log('Right Clicked:', event);
     event.preventDefault();
 
     this.closeContextMenu();
