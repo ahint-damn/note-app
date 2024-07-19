@@ -10,10 +10,10 @@ export interface Settings {
 export interface GeneralSettings {
   autoUpdate: boolean;
   language: string;
+  alwaysFocusNewFiles: boolean;
 }
 
 export interface EditorSettings {
-  alwaysFocusNewTabs: boolean;
   showLineNumbers: boolean;
   fontSize: number;
   fontFamily: string;

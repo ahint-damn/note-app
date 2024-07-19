@@ -91,7 +91,6 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       {
         label: 'Delete',
         action: () => {
-          // CALL AN ALERT HERE
           this.alertService.show({
             title: 'Delete Confirmation',
             message: `Are you sure you want to delete ${node.name}?`,
@@ -205,6 +204,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
         path: 'note/' + node.id,
       };
       this.nav.addTab(tab);
+      console.log(`[i] Opening note ${node.id}`, tab);
     }
   }
 
@@ -229,7 +229,8 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       type: 'success',
       message: 'File created',
     });
-  }
+    // this.clicked(node); - Doesn't Work because the node doesnt have a noteId (path) yet.
+  } 
 
   cancelFileEdit(node: FileNode) {
     this.notes.setCreatingFile(false);

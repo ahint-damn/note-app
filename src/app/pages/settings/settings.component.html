@@ -39,6 +39,15 @@
                             [(ngModel)]="settings.general.language" optionValue="value" [disabled]="true"></p-dropdown>
                     </div>
                 </div>
+                <div class="setting">
+                    <div class="text">
+                        <h3 class="name">Always Focus New Files</h3>
+                        <p class="description">Always focus new Files in the editor</p>
+                    </div>
+                    <div class="option">
+                        <p-inputSwitch [(ngModel)]="settings.general.alwaysFocusNewFiles" [disabled]="true"></p-inputSwitch>
+                    </div>
+                </div>
             </div>
             <div *ngIf="selectedOption == 'Editor'">
                 <h4>Editor Appearance</h4>
@@ -69,15 +78,6 @@
                     </div>
                     <div class="option">
                         <p-inputSwitch [(ngModel)]="settings.editor.showLineNumbers" [disabled]="true"></p-inputSwitch>
-                    </div>
-                </div>
-                <div class="setting">
-                    <div class="text">
-                        <h3 class="name">Always Focus New Tabs</h3>
-                        <p class="description">Always focus new tabs in the editor</p>
-                    </div>
-                    <div class="option">
-                        <p-inputSwitch [(ngModel)]="settings.editor.alwaysFocusNewTabs" [disabled]="true"></p-inputSwitch>
                     </div>
                 </div>
             </div>
