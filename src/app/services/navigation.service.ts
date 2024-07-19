@@ -21,7 +21,6 @@ export class NavigationService {
   }
 
   public addTab(tab: NavigationTab) {
-    //if tab with same route already exists, set it as active
     const existingTab = this.tabs.find(t => t.path === tab.path);
     if (existingTab) {
       this.setActiveTabId(existingTab.Id);
@@ -40,9 +39,19 @@ export class NavigationService {
     }
   }
 
+  closeTabByNoteId(noteId: string) {
+    const tabIndex = this.tabs.findIndex(tab => tab.noteId === noteId);
+    if (tabIndex >= 0) {
+      this.closeTab(tabIndex);
+    }
+  }
+
   public closeTab(id: number) {
     const tabIndex = this.tabs.findIndex(tab => tab.Id === id);
     this.tabs = this.tabs.filter(tab => tab.Id !== id);
+    this.tabs.forEach((tab, index) => {
+      tab.Id = index;
+    });
     this.tabsSubject.next(this.tabs);
 
     if (this.tabs.length === 0) {

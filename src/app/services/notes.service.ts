@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { buildFileTree, FileNode } from '../utils/file.utils';
 import { BehaviorSubject } from 'rxjs';
 import { ToastsService } from './toasts.service';
+import { NavigationService } from './navigation.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotesService {
-  constructor(private toasts: ToastsService) {}
+  constructor(private toasts: ToastsService, private nav: NavigationService) {}
 
   //observable statuses
   private creatingFolderSubject = new BehaviorSubject<boolean>(false);
@@ -150,6 +151,7 @@ export class NotesService {
     if (this.isElectron()) {
       window.electron.deleteNodeByPath(path);
       this.toasts.show({title: 'Success', duration: 3, type: 'success', message: 'Item Deleted'});
+      this.nav.closeTabByNoteId(id);
     }
   }
 
