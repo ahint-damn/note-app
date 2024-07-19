@@ -46,6 +46,9 @@ export class AlertComponent {
     if (event.key === 'Enter' && this.alert.confirm) {
       this.accept();
     }
+    if (event.key === 'Escape') {
+      this.cancel();
+    }
   }
 
 
