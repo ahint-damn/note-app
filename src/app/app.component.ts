@@ -54,6 +54,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   title = 'note-app';
   tabs: NavigationTab[] = [];
+  popupName: string = '';
   activeTabId: number = 0;
   alertFromService: Alert = {
     title: '',
@@ -67,6 +68,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   showAlert: boolean = false;
   currentConfig!: Settings;
 
+
   constructor(
     private router: Router,
     private settingsService: SettingsService,
@@ -77,7 +79,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   ) {
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
-        if (val.url.includes('settings') || val.url.includes('account')) {
+        if (val.url.includes('settings')) {
+          this.popupName = 'settings';
+          this.isPopup = true;
+        } else if (val.url.includes('account')) {
+          this.popupName = 'account';
           this.isPopup = true;
         } else {
           this.loadMainWindow();

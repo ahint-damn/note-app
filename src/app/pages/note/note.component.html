@@ -1,18 +1,16 @@
 <div class="note-wrapper">
   <div class="note-area" #noteArea>
     <textarea [(ngModel)]="noteContent" pInputTextarea (input)="valueChanged()" 
-    class="custom-textarea" #textArea></textarea>
+    class="custom-textarea" #textArea placeholder="Start typing here..."></textarea>
   </div>
-  <div class="note-stats" #stats>
-    <div class="stats">
-      <div class="stat">
-        <p class="name">Words</p>
-        <p class="value">{{ wordCount }}</p>
-      </div>
-      <div class="stat">
-        <p class="name">Characters</p>
-        <p class="value">{{ charCount }}</p>
-      </div>
+  <div class="stats">
+    <div class="stat">
+      <p class="name">Words</p>
+      <p class="value">{{ wordCount }}</p>
+    </div>
+    <div class="stat">
+      <p class="name">Characters</p>
+      <p class="value">{{ charCount }}</p>
     </div>
   </div>
 </div>

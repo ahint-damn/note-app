@@ -15,6 +15,7 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
+      spellcheck: true,
     },
   });
 
@@ -25,10 +26,15 @@ function createWindow() {
   });
 }
 
-newWindowInstances = [];
+accountWindowInstance = null;
 
-function createNewWindow(route, onCloseCallback) {
-  let newWindow = new BrowserWindow({
+function createAccountWindow(route, onCloseCallback) {
+  console.log('createAccountWindow');
+  if (accountWindowInstance) {
+    accountWindowInstance.focus();
+    return accountWindowInstance;
+  }
+  let accountWindow = new BrowserWindow({
     width: 800,
     height: 600,
     minWidth: 600,
@@ -42,19 +48,57 @@ function createNewWindow(route, onCloseCallback) {
     },
   });
 
-  const newWindowUrl = `file://${__dirname}/dist/note-app/browser/index.html#/${route}`;
-  console.log(`[i] new window url: ${newWindowUrl}`);
-  newWindow.loadURL(newWindowUrl);
+  const accountWindowUrl = `file://${__dirname}/dist/note-app/browser/index.html#/account`;
+  console.log(`[i] new window url: ${accountWindowUrl}`);
+  accountWindow.loadURL(accountWindowUrl);
+  accountWindowInstance = accountWindow;
 
-  newWindow.on('closed', function () {
-    newWindow = null;
+  accountWindow.on('closed', function () {
+    accountWindow = null;
+    accountWindowInstance = null;
     if (typeof onCloseCallback === 'function') {
       onCloseCallback();
     }
   });
 
-  newWindowInstances.push(newWindow);
-  return newWindow;
+  return accountWindow;
+}
+
+settingsWindowInstance = null;
+
+function createSettingsWindow(route, onCloseCallback) {
+  if (settingsWindowInstance) {
+    settingsWindowInstance.focus();
+    return settingsWindowInstance;
+  }
+  let settingsWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    minWidth: 600,
+    minHeight: 400,
+    frame: false,
+    backgroundColor: '#2a2a2b',
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  });
+
+  const settingsWindowUrl = `file://${__dirname}/dist/note-app/browser/index.html#/settings`;
+  console.log(`[i] new window url: ${settingsWindowUrl}`);
+  settingsWindow.loadURL(settingsWindowUrl);
+  settingsWindowInstance = settingsWindow;
+
+  settingsWindow.on('closed', function () {
+    settingsWindow = null;
+    settingsWindowInstance = null;
+    if (typeof onCloseCallback === 'function') {
+      onCloseCallback();
+    }
+  });
+  
+  return settingsWindow;
 }
 
 app.on('ready', createWindow);
@@ -83,22 +127,35 @@ console.log(`[i] notes directory: ${notesDir}`);
 
 // Handle window control events
 ipcMain.on('window-control', (event, arg) => {
-  lastWindow = newWindowInstances[newWindowInstances.length - 1];
   console.log(`[i] window control: ${arg}`);
   switch (arg) {
-    case 'minimize-popup':
-      lastWindow.minimize();
+    case 'minimize-settings':
+      settingsWindowInstance.minimize();
       break;
-    case 'maximize-popup':
-      if (lastWindow.isMaximized()) {
-        lastWindow.unmaximize();
+    case 'maximize-settings':
+      if (settingsWindowInstance.isMaximized()) {
+        settingsWindowInstance.unmaximize();
       }
       else {
-        lastWindow.maximize();
+        settingsWindowInstance.maximize();
       }
       break;
-    case 'close-popup':
-      lastWindow.close();
+    case 'close-settings':
+      settingsWindowInstance.close();
+      break;
+    case 'minimize-account':
+      accountWindowInstance.minimize();
+      break;
+    case 'maximize-account':
+      if (accountWindowInstance.isMaximized()) {
+        accountWindowInstance.unmaximize();
+      }
+      else {
+        accountWindowInstance.maximize();
+      }
+      break;
+    case 'close-account':
+      accountWindowInstance.close();
       break;
     case 'minimize-main':
       mainWindow.minimize();
@@ -188,12 +245,16 @@ ipcMain.on('delete-node-by-path', (event, arg) => {
   event.sender.send('delete-node-by-path-response');
 });
 
-// Open new window with route
 ipcMain.on('open-in-new-window', (event, route) => {
   const onCloseCallback = () => {
     mainWindow.webContents.send('reload-config');
   };
-  createNewWindow(route, onCloseCallback);
+  if (route === 'account') {
+    createAccountWindow(route, onCloseCallback);
+  }
+  else if (route === 'settings') {
+    createSettingsWindow(route, onCloseCallback);
+  }
   event.sender.send('open-in-new-window-response');
 });
 

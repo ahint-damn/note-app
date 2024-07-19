@@ -22,7 +22,6 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
   routeSub!: Subscription;
   wordCount: number = 0;
   charCount: number = 0;
-  @ViewChild('stats') stats!: ElementRef;
   @ViewChild('noteArea') noteArea!: ElementRef;
   @ViewChild('textArea') textArea!: ElementRef;
   noteContent: string = '';
@@ -58,7 +57,6 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    this.centerStats();
   }
 
   updateStats(){
@@ -67,13 +65,7 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getCharCount();
   }
 
-  centerStats(){
-    this.stats.nativeElement.style.width = this.noteArea.nativeElement.offsetWidth + 'px';
-    this.updateStats();
-  }
-
   ngAfterViewInit() {
-    this.centerStats();
     this.updateStats();
     this.updateStyling();
   }

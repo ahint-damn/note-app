@@ -43,11 +43,11 @@ export class SettingsComponent implements OnInit {
 
   constructor(private settingsService: SettingsService, 
     private toast: ToastsService) {
-    this.settingsService.config$.subscribe((settings: Settings) => {
-      this.settings = settings;
-    });
-    this.settingsService.loadConfigJson();
-    this.settingsBeforeChanges = this.settings;
+      this.settingsService.config$.subscribe((settings: Settings) => {
+        this.settings = settings;
+      });
+      this.settingsService.loadConfigJson();
+      this.settingsBeforeChanges = this.settings;
    }
 
 
@@ -79,15 +79,15 @@ export class SettingsComponent implements OnInit {
 
   save() {
     this.settingsService.saveConfigJson(JSON.stringify(this.settings));
-    (window as any).electron.windowControl('close-popup');
+    (window as any).electron.windowControl('close-settings');
   }
 
   cancel() {
-    (window as any).electron.windowControl('close-popup');
+    (window as any).electron.windowControl('close-settings');
   }
 
   close(){
-    (window as any).electron.windowControl('close-popup');
+    (window as any).electron.windowControl('close-settings');
   }
   
   @HostListener('window:keydown', ['$event'])
