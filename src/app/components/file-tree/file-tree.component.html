@@ -6,19 +6,20 @@
         [(ngModel)]="node.name"
         (keyup.enter)="createFile(node)"
         (keyup.escape)="cancelFileEdit(node)"
-        placeholder="File"
         name="fileName"
+        #fileInput
       />
       <p>.txt</p>
     </form>
-    <form *ngIf="node.createFolder && creatingFolder" (submit)="createFolder(node)">
+    <form *ngIf="node.createFolder && creatingFolder" 
+    (submit)="createFolder(node)">
       <input
         type="text"
         [(ngModel)]="node.name"
         (keyup.enter)="createFolder(node)"
         (keyup.escape)="cancelFolderEdit(node)"
-        placeholder="Folder"
         name="folderName"
+        #folderInput
       />
     </form>
     <div

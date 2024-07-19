@@ -4,18 +4,37 @@ import { NotesService } from '../../services/notes.service';
 import { CommonModule } from '@angular/common';
 import { FileTreeComponent } from '../file-tree/file-tree.component';
 import { FileNode, buildFileTree } from '../../utils/file.utils';
-
+import { ContextMenuDirective } from '../../directives/context-menu.directive';
+import { ContextMenuItem } from '../../interfaces/ContextMenu';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [ResizableDirective, CommonModule, FileTreeComponent],
+  imports: [ResizableDirective, CommonModule, FileTreeComponent, ContextMenuDirective],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
   fileNodes: FileNode[] = [];
 
+  getContextMenu(): ContextMenuItem[] {
+    return [
+      {
+        label: 'New Folder',
+        action: () => {
+          this.createFolder();
+        },
+      },
+      {
+        label: 'New File',
+        action: () => {
+          this.createFile();
+        },
+      },
+    ];
+  }
+
   minimise(){
+    //TODO: Implement reset wihtout preservation
     this.noteService.resetFileTree();
   }
 

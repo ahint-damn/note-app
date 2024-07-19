@@ -99,11 +99,11 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     if (this.notesService.checkIfElectron()) {
-      this.toastsService.show({title:'Development', duration:3, type: 'info', message: 'Running in Electron'});
+      this.toastsService.show({duration:3, type: 'info', message: 'Electron'});
       this.notesService.resetFileTree();
     }
     else{
-      this.toastsService.show({title:'Development', duration:3, type: 'info', message: 'Running in Browser'});
+      this.toastsService.show({duration:3, type: 'info', message: 'Browser'});
     }
     this.openTab(this.activeTabId);
   }

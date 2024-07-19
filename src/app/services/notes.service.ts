@@ -142,7 +142,7 @@ export class NotesService {
       console.log(`[i] Deleting node at path: ${path}`);
       this.closeTabsRecursively(id);
       window.electron.deleteNodeByPath(path).then(() => {
-        this.toasts.show({ title: 'Success', duration: 3, type: 'success', message: 'Item Deleted' });
+        this.toasts.show({ duration: 3, type: 'success', message: 'Item Deleted' });
         this.resetFileTree();
       });
     }

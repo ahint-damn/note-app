@@ -3,7 +3,7 @@
         'error': toast.type == 'error',
         'info': toast.type == 'info',
     }" #toastId>
-    <div class="toast-header">
+    <div class="toast-header" *ngIf="toast?.title">
         <h4>{{ toast?.title }}</h4>
     </div>
     <div class="toast-body">

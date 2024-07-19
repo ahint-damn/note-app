@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FileNode } from '../../utils/file.utils';
 import * as feather from 'feather-icons';
 import { Router } from '@angular/router';
@@ -25,6 +25,8 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
   @Input() fileNodes: FileNode[] = [];
   creatingFolder: boolean = false;
   creatingFile: boolean = false;
+  @ViewChild('folderInput') folderInput!: any;
+  @ViewChild('fileInput') fileInput!: any;
 
   constructor(
     private rtr: Router,
@@ -35,9 +37,19 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
   ) {
     this.notes.creatingFile$.subscribe((creatingFile) => {
       this.creatingFile = creatingFile;
+      if (creatingFile) {
+        setTimeout(() => {
+          this.fileInput.nativeElement.focus();
+        }, 0);
+      }
     });
     this.notes.creatingFolder$.subscribe((creatingFolder) => {
       this.creatingFolder = creatingFolder;
+      if (creatingFolder) {
+        setTimeout(() => {
+          this.folderInput.nativeElement.focus();
+        }, 0);
+      }
     });
   }
 
@@ -61,15 +73,15 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
     else{
       contextMenu.push(
         {
-          label: 'Create Folder',
-          action: () => {
-            this.createFolderNode(node);
-          },
-        },
-        {
           label: 'Create File',
           action: () => {
             this.createFileNode(node);
+          },
+        },
+        {
+          label: 'Create Folder',
+          action: () => {
+            this.createFolderNode(node);
           },
         }
       );
@@ -212,7 +224,6 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
     this.notes.saveNoteByPath(path, '');
     this.notes.resetFileTree();
     this.toasts.show({
-      title: 'Success',
       duration: 3,
       type: 'success',
       message: 'File created',
