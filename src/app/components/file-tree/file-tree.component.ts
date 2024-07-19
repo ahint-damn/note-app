@@ -201,6 +201,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       this.toggleNode(node);
     } else {
       if (this.openFileIds.has(node.id!)) {
+        //TODO: Once somethign is opened it can't be opened again
         console.log(`[i] File ${node.id} is already open`);
         return;
       }
