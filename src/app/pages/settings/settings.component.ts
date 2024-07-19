@@ -12,6 +12,7 @@ import { ColorPickerModule } from 'primeng/colorpicker';
 import { SettingsService } from '../../services/settings.service';
 import { ToastsService } from '../../services/toasts.service';
 import { Toast } from '../../interfaces/Toast';
+import { NavigationService } from '../../services/navigation.service';
 @Component({
   selector: 'app-settings',
   standalone: true,
@@ -40,7 +41,8 @@ export class SettingsComponent implements OnInit {
   settingsBeforeChanges: Settings | undefined;
 
 
-  constructor(private settingsService: SettingsService, private toast: ToastsService) {
+  constructor(private settingsService: SettingsService, 
+    private toast: ToastsService) {
     this.settings = this.settingsService.defaultSettings;
     this.settingsService.config$.subscribe((settings: Settings) => {
       this.settings = settings;
@@ -79,11 +81,17 @@ export class SettingsComponent implements OnInit {
   save() {
     console.log(this.settings);
     this.settingsService.saveConfigJson(JSON.stringify(this.settings));
-    this.toast.show(this.savedToast);
+    (window as any).electron.windowControl('close-popup');
+    // this.toast.show(this.savedToast); not working????
   }
 
   cancel() {
     //TODOO: close window nav
+    (window as any).electron.windowControl('close-popup');
+  }
+
+  close(){
+    (window as any).electron.windowControl('close-popup');
   }
 
 
