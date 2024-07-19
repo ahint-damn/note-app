@@ -32,6 +32,7 @@ function createNewWindow(route) {
     minWidth: 600,
     minHeight: 400,
     frame: false,
+    backgroundColor: '#2a2a2b',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,

@@ -6,7 +6,8 @@
     width: 100%;
     .left-side{
         width:20%;
-        min-width: 100px;
+        min-width: 20%;
+        max-width: 35%;
         background-color: $background-color;
         padding:20px;
         display:flex;
@@ -14,7 +15,7 @@
         gap:6px;
         border-right: 1px solid $border-color;
         .item{
-            padding:5px 10px;
+            padding:8px 10px;
             border-radius: 6px;
             font-size: 1.1rem;
             width:100%;
@@ -26,7 +27,7 @@
             }
         }
         .selected{
-            background-color: $tertiary-color !important;
+            background-color: $accent-color !important;
             color: $primary-color;
         }
     }

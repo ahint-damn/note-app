@@ -1,4 +1,5 @@
-<div class="settings-wrapper" appResizable="right">
+<div class="settings-wrapper">
+    <!-- <div class="left-side" appResizable="right"> -->
     <div class="left-side">
         <div class="item" [ngClass]="{'selected':selectedOption == 'General'}" (click)="toggle('General')">General</div>
         <div class="item" [ngClass]="{'selected':selectedOption == 'Appearance'}" (click)="toggle('Appearance')">Appearance</div>
@@ -27,8 +28,7 @@
                 </div>
                 <div class="option">
                     <p-dropdown [options]="languages" optionLabel="label" placeholder="Select a Language"
-                    [(ngModel)]="settings.general.language" [filter]="true"
-                    filterBy="name" ></p-dropdown>
+                    [(ngModel)]="settings.general.language" optionValue="value"></p-dropdown>
                 </div>
             </div>
         </div>
