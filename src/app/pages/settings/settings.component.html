@@ -34,7 +34,7 @@
             </div>
         </div>
         <div *ngIf="selectedOption == 'Editor'">
-            <h4>Editor</h4>
+            <h4>Editor Appearance</h4>
             <div class="divider"></div>
             <div class="setting">
                 <div class="text">
@@ -113,6 +113,108 @@
                 </div>
                 <div class="option">
                     <p-colorPicker [(ngModel)]="settings.appearance.accentColor"></p-colorPicker>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="selectedOption == 'Notifications'">
+            <h4>Notifications</h4>
+            <div class="divider"></div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Email Notifications</h3>
+                    <p class="description">Enable email notifications</p>
+                </div>
+                <div class="option">
+                    <p-inputSwitch [(ngModel)]="settings.notifications.email"></p-inputSwitch>
+                </div>
+            </div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Push Notifications</h3>
+                    <p class="description">Enable push notifications</p>
+                </div>
+                <div class="option">
+                    <p-inputSwitch [(ngModel)]="settings.notifications.push"></p-inputSwitch>
+                </div>
+            </div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">SMS Notifications</h3>
+                    <p class="description">Enable SMS notifications</p>
+                </div>
+                <div class="option">
+                    <p-inputSwitch [(ngModel)]="settings.notifications.sms"></p-inputSwitch>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="selectedOption == 'Privacy'">
+            <h4>Privacy</h4>
+            <div class="divider"></div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Allow Cookies</h3>
+                    <p class="description">Allow cookies to be stored on your device</p>
+                </div>
+                <div class="option">
+                    <p-inputSwitch [(ngModel)]="settings.privacy.allowCookies"></p-inputSwitch>
+                </div>
+            </div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Allow Tracking</h3>
+                    <p class="description">Allow third-party tracking</p>
+                </div>
+                <div class="option">
+                    <p-inputSwitch [(ngModel)]="settings.privacy.allowTracking"></p-inputSwitch>
+                </div>
+            </div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Third Party Cookies</h3>
+                    <p class="description">Allow third-party cookies</p>
+                </div>
+                <div class="option">
+                    <p-inputSwitch [(ngModel)]="settings.privacy.allowThirdParty"></p-inputSwitch>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="selectedOption == 'Security'">
+            <h4>Security</h4>
+            <div class="divider"></div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Two Factor Authentication</h3>
+                    <p class="description">Enable two-factor authentication</p>
+                </div>
+                <div class="option">
+                    <p-inputSwitch [(ngModel)]="settings.security.twoFactor"></p-inputSwitch>
+                </div>
+            </div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Note Encryption</h3>
+                    <p class="description">Encrypt notes</p>
+                </div>
+                <div class="option">
+                    <p-inputSwitch [(ngModel)]="settings.security.encryption"></p-inputSwitch>
+                </div>
+            </div>
+            <div class="setting">
+                <div class="text">
+                    <h3 class="name">Use Password</h3>
+                    <p class="description">Use password to access the app</p>
+                </div>
+                <div class="option">
+                    <p-inputSwitch [(ngModel)]="settings.security.usePassword"></p-inputSwitch>
+                </div>
+            </div>
+            <div class="setting" *ngIf="settings.security.usePassword">
+                <div class="text">
+                    <h3 class="name">Password</h3>
+                    <p class="description">Change your App password (Different from Account)</p>
+                </div>
+                <div class="option">
+                    <button pButton type="button" label="Change App Password" (click)="changePassword()"></button>
                 </div>
             </div>
         </div>

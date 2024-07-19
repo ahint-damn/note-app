@@ -42,7 +42,7 @@ export interface PrivacySettings {
 export interface SecuritySettings {
   twoFactor: boolean;
   encryption: boolean;
-  password: string;
+  usePassword: boolean;
 }
 
   

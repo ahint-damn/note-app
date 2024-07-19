@@ -34,5 +34,9 @@ contextBridge.exposeInMainWorld('electron', {
   openInNewWindow: (url) => new Promise((resolve) => {
     ipcRenderer.once('open-in-new-window-response', () => resolve());
     ipcRenderer.send('open-in-new-window', url);
+  }),
+  saveConfig: (config) => new Promise((resolve) => {
+    ipcRenderer.once('save-config-response', () => resolve());
+    ipcRenderer.send('save-config', config);
   })
 });

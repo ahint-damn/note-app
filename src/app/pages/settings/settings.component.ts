@@ -32,7 +32,7 @@ export class SettingsComponent implements OnInit {
     appearance: {theme: 'dark', UIFontSize: 14, UIFontFamily: 'Arial', accentColor: '#ff5f5f'},
     notifications: {email: true, push: true, sms: true},
     privacy: {allowCookies: true, allowTracking: true, allowThirdParty: true},
-    security: {twoFactor: true, encryption: true, password: 'password'}
+    security: {twoFactor: true, encryption: false, usePassword: false}
   };
   settings!: Settings;
 
@@ -57,5 +57,9 @@ export class SettingsComponent implements OnInit {
 
   toggle(option: string) {
     this.selectedOption = option;
+  }
+
+  changePassword(){
+    //open account
   }
 }

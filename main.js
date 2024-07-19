@@ -68,6 +68,8 @@ app.on('activate', function () {
 // Directory for storing notes
 const notesDir = path.join(app.getPath('documents'), 'Notes');
 
+const configDir = path.join(app.getPath('userData'), 'notes-config');
+
 if (!fs.existsSync(notesDir)) {
   fs.mkdirSync(notesDir);
 }
@@ -137,3 +139,11 @@ ipcMain.on('open-in-new-window', (event, route) => {
   createNewWindow(route);
   event.sender.send('open-in-new-window-response');
 });
+
+// Save config (JSON STRING)
+ipcMain.on('save-config', (event, config) => {
+  const configPath = path.join(configDir, 'config.json');
+  fs.writeFileSync(configPath, config);
+  event.sender.send('save-config-response');
+});
+  
