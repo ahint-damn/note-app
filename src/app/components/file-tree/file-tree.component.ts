@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, HostListener, Input, OnInit, ViewChild } from '@angular/core';
-import { FileNode } from '../../utils/file.utils';
+import { FileNode, generatePersistentId } from '../../utils/file.utils';
 import * as feather from 'feather-icons';
 import { Router } from '@angular/router';
 import { NavigationService } from '../../services/navigation.service';
@@ -11,7 +11,6 @@ import { ToastsService } from '../../services/toasts.service';
 import { ContextMenuDirective } from '../../directives/context-menu.directive';
 import { ContextMenuItem } from '../../interfaces/ContextMenu';
 import { AlertService } from '../../services/alert.service';
-import { Alert } from '../../interfaces/Alert';
 import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
@@ -27,8 +26,6 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
   creatingFile: boolean = false;
   @ViewChild('folderInput') folderInput!: any;
   @ViewChild('fileInput') fileInput!: any;
-
-  private openFileIds: Set<string> = new Set();
 
   constructor(
     private rtr: Router,
@@ -60,57 +57,47 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       return [];
     }
 
-    var contextMenu: ContextMenuItem[] = [];
+    const contextMenu: ContextMenuItem[] = [];
 
     if (node.extension) {
-      contextMenu.push(
-        {
-          label: 'Open',
-          action: () => {
-            this.clicked(node);
-          },
-        }
-      );
+      contextMenu.push({
+        label: 'Open',
+        action: () => this.clicked(node),
+      });
     } else {
       contextMenu.push(
         {
           label: 'Create File',
-          action: () => {
-            this.createFileNode(node);
-          },
+          action: () => this.createFileNode(node),
         },
         {
           label: 'Create Folder',
-          action: () => {
-            this.createFolderNode(node);
-          },
+          action: () => this.createFolderNode(node),
         }
       );
     }
 
-    contextMenu.push(
-      {
-        label: 'Delete',
-        action: () => {
-          this.alertService.show({
-            title: 'Delete Confirmation',
-            message: `Are you sure you want to delete ${node.name}?`,
-            confirm: true,
-            acceptText: 'Yes',
-            rejectText: 'No',
-            dismissText: 'Cancel',
-          });
+    contextMenu.push({
+      label: 'Delete',
+      action: () => {
+        this.alertService.show({
+          title: 'Delete Confirmation',
+          message: `Are you sure you want to delete ${node.name}?`,
+          confirm: true,
+          acceptText: 'Yes',
+          rejectText: 'No',
+          dismissText: 'Cancel',
+        });
 
-          this.alertService.getAlert().subscribe(alert => {
-            if (alert.positiveResponse) {
-              this.notes.deleteNodeById(node.id!);
-              this.notes.resetFileTree();
-              this.openFileIds.delete(node.id!);
-            }
-          });
-        },
-      }
-    );
+        this.alertService.getAlert().subscribe((alert) => {
+          if (alert.positiveResponse) {
+            this.notes.deleteNodeById(node.id!);
+            this.notes.resetFileTree();
+          }
+        });
+      },
+    });
+
     return contextMenu;
   }
 
@@ -121,25 +108,13 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {}
 
   createFileNode(targetNode: FileNode): void {
-    if (this.notes.getCreatingFile()) {
-      return;
-    }
-
-    if (this.notes.getCreatingFolder()) {
-      this.notes.setCreatingFolder(false);
-    }
+    if (this.notes.getCreatingFile()) return;
+    if (this.notes.getCreatingFolder()) this.notes.setCreatingFolder(false);
     this.notes.setCreatingFile(true);
 
-    if (
-      targetNode.children &&
-      targetNode.children.filter((node) => node.createFile).length > 0
-    ) {
-      return;
-    }
+    if (targetNode.children && targetNode.children.some((node) => node.createFile)) return;
 
-    if (!targetNode.children) {
-      targetNode.children = [];
-    }
+    if (!targetNode.children) targetNode.children = [];
 
     const newNodePath = `${targetNode.path}/${targetNode.name}.txt`;
     targetNode.children.push({
@@ -150,29 +125,19 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       createFile: true,
       path: newNodePath,
       parent: targetNode,
-      id: this.generatePersistentId(newNodePath),
+      id: generatePersistentId(newNodePath),
     });
   }
 
   createFolderNode(targetNode: FileNode): void {
-    if (this.notes.getCreatingFolder()) {
-      return;
-    }
-    if (this.notes.getCreatingFile()) {
-      this.notes.setCreatingFile(false);
-    }
+    if (this.notes.getCreatingFolder()) return;
+    if (this.notes.getCreatingFile()) this.notes.setCreatingFile(false);
     this.notes.setCreatingFolder(true);
 
-    if (
-      targetNode.children &&
-      targetNode.children.filter((node) => node.createFolder).length > 0
-    ) {
-      return;
-    }
+    if (targetNode.children && targetNode.children.some((node) => node.createFolder)) return;
 
-    if (!targetNode.children) {
-      targetNode.children = [];
-    }
+    if (!targetNode.children) targetNode.children = [];
+
     const newNodePath = `${targetNode.path}/${targetNode.name}`;
     targetNode.children.push({
       name: '',
@@ -182,7 +147,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       createFolder: true,
       path: newNodePath,
       parent: targetNode,
-      id: this.generatePersistentId(newNodePath),
+      id: generatePersistentId(newNodePath),
     });
   }
 
@@ -200,12 +165,6 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
     if (!node.extension) {
       this.toggleNode(node);
     } else {
-      if (this.openFileIds.has(node.id!)) {
-        //TODO: Once somethign is opened it can't be opened again
-        console.log(`[i] File ${node.id} is already open`);
-        return;
-      }
-
       const tab: NavigationTab = {
         Id: 0,
         title: node.name,
@@ -213,7 +172,6 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
         path: 'note/' + node.id,
       };
       this.nav.addTab(tab);
-      this.openFileIds.add(node.id!);
       console.log(`[i] Opening note ${node.id}`, tab);
     }
   }
@@ -239,8 +197,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       type: 'success',
       message: 'File created',
     });
-    // this.clicked(node); - Doesn't Work because the node doesnt have a noteId (path) yet.
-  } 
+  }
 
   cancelFileEdit(node: FileNode) {
     this.notes.setCreatingFile(false);
@@ -254,21 +211,14 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
     this.notes.resetFileTree();
   }
 
-  private generatePersistentId(path: string): string {
-    let hash = 0;
-    for (let i = 0; i < path.length; i++) {
-      const char = path.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash |= 0;
-    }
-    return hash.toString();
-  }
-
   @HostListener('document:click', ['$event'])
   clickout(event: any) {
     if (this.creatingFile || this.creatingFolder) {
-      if (!event.target.closest('.context-menu') && !event.target.closest('.feather')
-      && event.target.type !== 'text') {
+      if (
+        !event.target.closest('.context-menu') &&
+        !event.target.closest('.feather') &&
+        event.target.type !== 'text'
+      ) {
         this.notes.setCreatingFile(false);
         this.notes.setCreatingFolder(false);
         this.notes.resetFileTree();

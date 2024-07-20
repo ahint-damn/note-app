@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NavigationTab } from '../interfaces/NavigationTab';
+
 @Injectable({
   providedIn: 'root'
 })
 export class NavigationService {
-
-  private isElectron = (): boolean => {
-    return !!(window && window.electron);
-  };
-
-
   private tabs: NavigationTab[] = [];
   private tabsSubject: BehaviorSubject<NavigationTab[]> = new BehaviorSubject<NavigationTab[]>(this.tabs);
   private activeTabId: number = 0;
   private activeTabIdSubject: BehaviorSubject<number> = new BehaviorSubject<number>(this.activeTabId);
+
+  private isElectron = (): boolean => {
+    return !!(window && window.electron);
+  };
 
   public getTabs(): Observable<NavigationTab[]> {
     return this.tabsSubject.asObservable();
@@ -43,7 +42,7 @@ export class NavigationService {
     }
   }
 
-  closeTabByNoteId(noteId: string) {
+  public closeTabByNoteId(noteId: string) {
     const tabIndex = this.tabs.findIndex(tab => tab.noteId === noteId);
     if (tabIndex >= 0) {
       this.closeTab(tabIndex);
@@ -52,32 +51,31 @@ export class NavigationService {
 
   public closeTab(id: number) {
     const tabIndex = this.tabs.findIndex(tab => tab.Id === id);
-    this.tabs = this.tabs.filter(tab => tab.Id !== id);
-    this.tabs.forEach((tab, index) => {
-      tab.Id = index;
-    });
-    this.tabsSubject.next(this.tabs);
-
-    if (this.tabs.length === 0) {
-      this.addTab({Id: 0, title: 'Welcome', path: 'welcome'});
-      this.setActiveTabId(0);
-    } else {
-      if (this.activeTabId === id) {
-        const newActiveTabId = tabIndex >= this.tabs.length ? this.tabs.length - 1 : tabIndex;
-        this.setActiveTabId(newActiveTabId);
-      } else if (this.activeTabId > id) {
-        this.setActiveTabId(this.activeTabId - 1);
+    if (tabIndex >= 0) {
+      this.tabs.splice(tabIndex, 1);
+      this.tabs.forEach((tab, index) => (tab.Id = index));
+      this.tabsSubject.next(this.tabs);
+      if (this.tabs.length === 0) {
+        this.addTab({ Id: 0, title: 'Welcome', path: 'welcome' });
+        this.setActiveTabId(0);
+      } else {
+        if (this.activeTabId === id) {
+          const newActiveTabId = tabIndex >= this.tabs.length ? this.tabs.length - 1 : tabIndex;
+          this.setActiveTabId(newActiveTabId);
+        } else if (this.activeTabId > id) {
+          this.setActiveTabId(this.activeTabId - 1);
+        }
       }
     }
   }
 
-  openInNewWindow(url: string): void {
+  public openInNewWindow(url: string): void {
     if (this.isElectron()) {
       window.electron.openInNewWindow(url);
     }
   }
 
-  constructor() { 
-    this.addTab({Id: 0, title: 'Welcome', path: 'welcome'});
+  constructor() {
+    this.addTab({ Id: 0, title: 'Welcome', path: 'welcome' });
   }
 }

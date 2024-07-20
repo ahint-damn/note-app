@@ -4,25 +4,25 @@ export interface FileNode {
   isExpanded?: boolean;
   extension?: string;
   icon?: string;
-  id?: string;
-  path?: string;
+  id: string;
+  path: string;
   createFolder?: boolean;
   createFile?: boolean;
   parent?: FileNode;
 }
 
+export function generatePersistentId(path: string): string {
+  let hash = 0;
+  for (let i = 0; i < path.length; i++) {
+    const char = path.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash |= 0;
+  }
+  return hash.toString();
+}
+
 export function buildFileTree(fileList: string[]): FileNode[] {
   const root: FileNode[] = [];
-
-  const generatePersistentId = (path: string): string => {
-    let hash = 0;
-    for (let i = 0; i < path.length; i++) {
-      const char = path.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash |= 0;
-    }
-    return hash.toString();
-  };
 
   fileList.forEach(filePath => {
     const parts = filePath.split('/');
@@ -35,7 +35,13 @@ export function buildFileTree(fileList: string[]): FileNode[] {
       let existingNode = currentLevel.find(node => node.name === part);
 
       if (!existingNode) {
-        existingNode = { name: part, children: [], id: generatePersistentId(currentPath), path: currentPath, parent: parentNode };
+        existingNode = { 
+          name: part, 
+          children: [], 
+          id: generatePersistentId(currentPath), 
+          path: currentPath, 
+          parent: parentNode 
+        };
         if (index === parts.length - 1) {
           const extensionMatch = part.match(/\.([^.]+)$/);
           if (extensionMatch) {
