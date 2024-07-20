@@ -219,6 +219,7 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
         !event.target.closest('.feather') &&
         event.target.type !== 'text'
       ) {
+        console.log('[i] Clicked outside of context menu');
         this.notes.setCreatingFile(false);
         this.notes.setCreatingFolder(false);
         this.notes.resetFileTree();

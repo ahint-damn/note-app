@@ -20,12 +20,13 @@
       <button class="app-button" (click)="createFile()"><i data-feather="file-plus" class="icon"></i></button>
       <button class="app-button" (click)="minimise()"><i data-feather="minimize-2" class="icon"></i></button>
     </div>
-    <!-- <div class="sidebar-list" [appContextMenu]="getContextMenu()"> -->
     <div class="sidebar-list">
       <div class="mini-title">
         <h5>Notes</h5>
       </div>
       <app-file-tree [fileNodes]="fileNodes"></app-file-tree>
+        <div class="context-menu-filler" [appContextMenu]="getContextMenu()">
+      </div>
     </div>
   </div>
 </div>
