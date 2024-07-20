@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Input, OnInit, ViewChild } from '@angular/core';
 import { FileNode } from '../../utils/file.utils';
 import * as feather from 'feather-icons';
 import { Router } from '@angular/router';
@@ -262,5 +262,17 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
       hash |= 0;
     }
     return hash.toString();
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickout(event: any) {
+    if (this.creatingFile || this.creatingFolder) {
+      if (!event.target.closest('.context-menu') && !event.target.closest('.feather')
+      && event.target.type !== 'text') {
+        this.notes.setCreatingFile(false);
+        this.notes.setCreatingFolder(false);
+        this.notes.resetFileTree();
+      }
+    }
   }
 }
