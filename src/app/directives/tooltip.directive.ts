@@ -1,9 +1,17 @@
-import { Directive, ElementRef, HostListener, Input, ComponentRef, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  HostListener,
+  Input,
+  ComponentRef,
+  ViewContainerRef,
+  ComponentFactoryResolver,
+} from '@angular/core';
 import { TooltipComponent } from '../components/tooltip/tooltip.component';
 
 @Directive({
   selector: '[appTooltip]',
-  standalone: true
+  standalone: true,
 })
 export class TooltipDirective {
   @Input('appTooltip') tooltipText: string = '';
@@ -23,12 +31,13 @@ export class TooltipDirective {
     if (!this.tooltipText) {
       return;
     }
-
-    const factory = this.componentFactoryResolver.resolveComponentFactory(TooltipComponent);
+    const factory =
+      this.componentFactoryResolver.resolveComponentFactory(TooltipComponent);
     this.tooltipComponentRef = this.viewContainerRef.createComponent(factory);
     this.tooltipComponentRef.instance.tooltip = this.tooltipText;
-    
-    const tooltipElem = this.tooltipComponentRef.location.nativeElement as HTMLElement;
+
+    const tooltipElem = this.tooltipComponentRef.location
+      .nativeElement as HTMLElement;
     document.body.appendChild(tooltipElem);
 
     this.updateTooltipPosition();
@@ -51,7 +60,8 @@ export class TooltipDirective {
 
   private updateTooltipPosition(): void {
     if (this.tooltipComponentRef) {
-      const tooltipElem = this.tooltipComponentRef.location.nativeElement as HTMLElement;
+      const tooltipElem = this.tooltipComponentRef.location
+        .nativeElement as HTMLElement;
       const tooltipWidth = tooltipElem.offsetWidth;
       const tooltipHeight = tooltipElem.offsetHeight;
       const margin = 10;
@@ -73,6 +83,7 @@ export class TooltipDirective {
       tooltipElem.style.position = 'absolute';
       tooltipElem.style.left = `${left}px`;
       tooltipElem.style.top = `${top}px`;
+      tooltipElem.style.zIndex = '999999';
     }
   }
 }

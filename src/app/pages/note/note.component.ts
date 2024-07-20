@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef, AfterViewInit, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef, AfterViewInit, ViewChild, HostListener, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NotesService } from '../../services/notes.service';
@@ -10,10 +10,14 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { debounce } from 'lodash';
 import { Settings } from '../../interfaces/Settings';
 import { SettingsService } from '../../services/settings.service';
+import * as feather from 'feather-icons';
+import { TooltipDirective } from '../../directives/tooltip.directive';
+
 @Component({
   selector: 'app-note',
   standalone: true,
-  imports: [CommonModule, MarkdownModule, FormsModule, InputTextareaModule],
+  imports: [CommonModule, MarkdownModule, FormsModule, InputTextareaModule,
+  TooltipDirective],
   templateUrl: './note.component.html',
   styleUrls: ['./note.component.scss']
 })
@@ -26,6 +30,8 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('textArea') textArea!: ElementRef;
   noteContent: string = '';
   currentConfig!: Settings;
+  mdMode: string = 'edit';
+  extension: string = '.txt';
 
   constructor(private route: ActivatedRoute, private notesService: NotesService,
     private settings: SettingsService) {
@@ -33,6 +39,10 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
     settings.config$.subscribe((config: Settings) => {
       this.currentConfig = config;
       this.updateStyling();
+    });
+
+    this.notesService.mdMode$.subscribe((mode: string) => {
+      this.mdMode = mode;
     });
   }
 
@@ -68,6 +78,7 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     this.updateStats();
     this.updateStyling();
+    feather.replace();
   }
 
   getWordCount() {
@@ -97,7 +108,10 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async loadNote() {
-    const content = await this.notesService.readNoteByPath(this.notesService.getNotePath(this.noteId));
+    const path = this.notesService.getNotePath(this.noteId);
+    this.extension = path.split('.').pop() || 'txt';
+    console.log(`Extension: ${this.extension}`)
+    const content = await this.notesService.readNoteByPath(path);
     this.noteContent = content;
     this.updateStats();
     this.updateStyling();

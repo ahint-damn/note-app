@@ -16,6 +16,9 @@ export class NotesService {
   private creatingFileSubject = new BehaviorSubject<boolean>(false);
   creatingFile$ = this.creatingFileSubject.asObservable();
 
+  private mdModeSubject = new BehaviorSubject<string>('view');
+  mdMode$ = this.mdModeSubject.asObservable();
+
   // Observable file Nodes
   private fileNodesSubject = new BehaviorSubject<FileNode[]>([]);
   fileNodes$ = this.fileNodesSubject.asObservable();
