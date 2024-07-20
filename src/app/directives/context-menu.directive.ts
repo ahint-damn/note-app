@@ -32,6 +32,7 @@ export class ContextMenuDirective {
     const contextMenuElem = this.contextMenuComponentRef.location.nativeElement as HTMLElement;
     document.body.appendChild(contextMenuElem);
     // Set styles for positioning
+    contextMenuElem.classList.add('context-menu');
     contextMenuElem.style.position = 'absolute';
     contextMenuElem.style.left = `${event.clientX}px`;
     contextMenuElem.style.top = `${event.clientY}px`;
@@ -56,5 +57,10 @@ export class ContextMenuDirective {
       this.contextMenuComponentRef = null;
       ContextMenuDirective.currentContextMenu = null;
     }
+    const contextMenuElems = document.querySelectorAll('.context-menu');
+    contextMenuElems.forEach((elem) => {
+      elem.remove();
+    });
+    
   }
 }
