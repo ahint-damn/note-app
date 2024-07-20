@@ -16,7 +16,7 @@ export class NotesService {
   private creatingFileSubject = new BehaviorSubject<boolean>(false);
   creatingFile$ = this.creatingFileSubject.asObservable();
 
-  private mdModeSubject = new BehaviorSubject<string>('view');
+  private mdModeSubject = new BehaviorSubject<string>('edit');
   mdMode$ = this.mdModeSubject.asObservable();
 
   // Observable file Nodes
@@ -27,6 +27,10 @@ export class NotesService {
   private isElectron = (): boolean => {
     return !!(window && window.electron);
   };
+
+  setMdMode(mode: string): void {
+    this.mdModeSubject.next(mode);
+  }
 
   // Change status
   setCreatingFolder(status: boolean): void {

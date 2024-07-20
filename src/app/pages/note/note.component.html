@@ -5,9 +5,15 @@
   </div>
   <div class="bottom-float">
     <div class="md" *ngIf="extension === 'md'">
-      <button class="app-button" appTooltip="Edit Mode"><i data-feather="edit-3" class="icon"></i></button>
-      <button class="app-button" appTooltip="View Mode"><i data-feather="eye" class="icon"></i></button>
-      <button class="app-button" appTooltip="Combined Mode"><i data-feather="columns" class="icon"></i></button>
+      <button class="app-button" (click)="setEditorMode('edit')" appTooltip="Edit Mode">
+        <i data-feather="edit-3" class="icon" [ngClass]="{'editing-mode-selected': mdMode == 'edit'}"></i>
+      </button>
+      <button class="app-button" (click)="setEditorMode('view')" appTooltip="View Mode">
+        <i data-feather="eye" class="icon" [ngClass]="{'editing-mode-selected': mdMode == 'view'}"></i>
+      </button>
+      <button class="app-button" (click)="setEditorMode('both')" appTooltip="Combined Mode">
+        <i data-feather="columns" class="icon" [ngClass]="{'editing-mode-selected': mdMode == 'both'}"></i>
+      </button>
     </div>
     <div class="stats">
       <div class="stat">
@@ -15,7 +21,7 @@
         <p class="value">{{ wordCount }}</p>
       </div>
       <div class="stat">
-        <p class="name">Characters</p>
+        <p class="name">Chars</p>
         <p class="value">{{ charCount }}</p>
       </div>
     </div>

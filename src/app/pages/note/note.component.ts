@@ -30,7 +30,7 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('textArea') textArea!: ElementRef;
   noteContent: string = '';
   currentConfig!: Settings;
-  mdMode: string = 'edit';
+  mdMode: string = 'both';
   extension: string = '.txt';
 
   constructor(private route: ActivatedRoute, private notesService: NotesService,
@@ -43,6 +43,7 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.notesService.mdMode$.subscribe((mode: string) => {
       this.mdMode = mode;
+      console.log(`Mode: ${this.mdMode}`);
     });
   }
 
@@ -54,6 +55,12 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
     this.updateStyling();
   }
 
+  setEditorMode(mode: string) {
+    if (mode == this.mdMode){
+      return;
+    }
+    this.notesService.setMdMode(mode);
+  }
   updateStyling(){
     if (!this.textArea) return;
     this.textArea.nativeElement.style.fontSize = this.currentConfig.editor.fontSize + 'px';
@@ -110,7 +117,6 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
   async loadNote() {
     const path = this.notesService.getNotePath(this.noteId);
     this.extension = path.split('.').pop() || 'txt';
-    console.log(`Extension: ${this.extension}`)
     const content = await this.notesService.readNoteByPath(path);
     this.noteContent = content;
     this.updateStats();
