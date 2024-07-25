@@ -6,7 +6,7 @@ import { Settings } from '../interfaces/Settings';
 })
 export class SettingsService {
   defaultSettings: Settings = {
-    general: {autoUpdate: true, language: 'en', alwaysFocusNewFiles: true},
+    general: {autoUpdate: true, language: 'en', alwaysFocusNewFiles: true, backupNotes: false, backupToDrive: false},
     editor: {showLineNumbers: true, fontSize: 14, fontFamily: 'Arial', stats: true, autoSave: true},
     appearance: {theme: 'dark', UIFontSize: 18, UIFontFamily: 'Helvetica Neue', accentColor: '#ff5f5f'},
     notifications: {email: true, push: true, sms: true},

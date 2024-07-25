@@ -11,6 +11,8 @@ export interface GeneralSettings {
   autoUpdate: boolean;
   language: string;
   alwaysFocusNewFiles: boolean;
+  backupNotes: boolean;
+  backupToDrive: boolean;
 }
 
 export interface EditorSettings {

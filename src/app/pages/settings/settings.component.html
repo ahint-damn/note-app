@@ -48,6 +48,24 @@
                         <p-inputSwitch [(ngModel)]="settings.general.alwaysFocusNewFiles" [disabled]="true"></p-inputSwitch>
                     </div>
                 </div>
+                <div class="setting">
+                    <div class="text">
+                        <h3 class="name">Backup Notes</h3>
+                        <p class="description">Create a backup of notes every time the program is closed.</p>
+                    </div>
+                    <div class="option">
+                        <p-inputSwitch [(ngModel)]="settings.general.backupNotes"></p-inputSwitch>
+                    </div>
+                </div>
+                <div class="setting" *ngIf="settings.general.backupNotes">
+                    <div class="text">
+                        <h3 class="name">Backup to Drive</h3>
+                        <p class="description">Backup notes to online drive instead of locall.</p>
+                    </div>
+                    <div class="option">
+                        <p-inputSwitch [(ngModel)]="settings.general.backupToDrive"></p-inputSwitch>
+                    </div>
+                </div>
             </div>
             <div *ngIf="selectedOption == 'Editor'">
                 <h4>Editor Appearance</h4>
