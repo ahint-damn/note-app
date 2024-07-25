@@ -32,7 +32,6 @@ export class SettingsComponent implements OnInit {
   settings!: Settings;
 
   savedToast: Toast = {
-    duration: 3,
     type: 'success',
     title: 'Settings Saved',
     message: 'Your settings have been saved successfully'

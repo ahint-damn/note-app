@@ -12,6 +12,8 @@ import { Settings } from '../../interfaces/Settings';
 import { SettingsService } from '../../services/settings.service';
 import * as feather from 'feather-icons';
 import { TooltipDirective } from '../../directives/tooltip.directive';
+import { NavigationService } from '../../services/navigation.service';
+import { ToastsService } from '../../services/toasts.service';
 
 @Component({
   selector: 'app-note',
@@ -32,10 +34,13 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
   currentConfig!: Settings;
   mdMode: string = 'both';
   extension: string = '.txt';
+  touched: boolean = false;
 
-  constructor(private route: ActivatedRoute, private notesService: NotesService,
-    private settings: SettingsService) {
-    this.valueChanged = debounce(this.valueChanged.bind(this), 300); // Debounce for 300 milliseconds
+  constructor(
+    private route: ActivatedRoute, private toastService: ToastsService,
+    private notesService: NotesService, private settings: SettingsService, 
+    private nav: NavigationService) {
+    this.processSave = debounce(this.processSave.bind(this), 1000); // Debounce for a second.
     settings.config$.subscribe((config: Settings) => {
       this.currentConfig = config;
       this.updateStyling();
@@ -67,13 +72,34 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
     this.textArea.nativeElement.style.fontFamily = this.currentConfig.editor.fontFamily;
   }
 
-  valueChanged() {
+  processSave(){
     this.updateStats();
     this.saveNote();
+    this.touched = false;
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
+  valueChanged() {
+    this.touched = true;
+    if (this.currentConfig.editor.autoSave){
+      this.processSave();
+    }
+  }
+
+  @HostListener('keydown.meta.s', ['$event'])
+  handleMetaS(event: KeyboardEvent) {
+    event.preventDefault();
+    if (this.currentConfig.editor.autoSave){
+      this.toastService.show({
+        type: 'info',
+        message: 'Auto Save is enabled.'
+      });
+      return;
+    }
+    this.processSave();
+    this.toastService.show({
+      type: 'success',
+      message: 'Note Saved'
+    });
   }
 
   updateStats(){

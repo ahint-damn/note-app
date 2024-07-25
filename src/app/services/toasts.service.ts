@@ -21,7 +21,7 @@ export class ToastsService {
     this.toastsSource.next([...currentToasts, toast]);
     setTimeout(() => {
       this.remove(toast);
-    }, toast.duration * 1000);
+    }, 3000);
   }
 
   remove(toast: Toast) {

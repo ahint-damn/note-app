@@ -31,6 +31,7 @@ import { AlertService } from './services/alert.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SettingsService } from './services/settings.service';
 import { Settings } from './interfaces/Settings';
+import { KeybindsDirective } from './directives/keybinds.directive';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -44,6 +45,7 @@ import { Settings } from './interfaces/Settings';
     FileTreeComponent,
     CommonModule,
     AlertComponent,
+    KeybindsDirective
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -124,7 +126,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.tabs = tabs;
     });
 
-    this.nav.getActiveTabId().subscribe((activeTabId) => {
+    this.nav.getActiveTabIdObservable().subscribe((activeTabId) => {
       this.activeTabId = activeTabId;
       if (this.tabs[this.activeTabId] !== undefined) {
         this.router.navigate([this.tabs[this.activeTabId].path]);
@@ -175,14 +177,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.settingsService.loadConfigJson();
     if (this.notesService.checkIfElectron()) {
       this.toastsService.show({
-        duration: 3,
         type: 'info',
         message: 'Electron',
       });
       this.notesService.resetFileTree();
     } else {
       this.toastsService.show({
-        duration: 3,
         type: 'info',
         message: 'Browser',
       });

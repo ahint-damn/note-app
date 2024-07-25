@@ -4,6 +4,7 @@ import { NavigationTab } from '../../interfaces/NavigationTab';
 import { TooltipDirective } from '../../directives/tooltip.directive';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NotesService } from '../../services/notes.service';
 @Component({
   selector: 'app-toolbar',
   standalone: true,
@@ -15,7 +16,7 @@ export class ToolbarComponent {
   @Input() title: string = 'Quotient';
   @Input() target: string = 'main';
   @Input() showOptions: boolean = true;
-  constructor(private nav: NavigationService, private router: Router) {}
+  constructor(private nav: NavigationService, private notes: NotesService, private router: Router) {}
 
   settingsTab: NavigationTab = {
     Id: 0,

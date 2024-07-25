@@ -80,6 +80,15 @@
                         <p-inputSwitch [(ngModel)]="settings.editor.showLineNumbers" [disabled]="true"></p-inputSwitch>
                     </div>
                 </div>
+                <div class="setting">
+                    <div class="text">
+                        <h3 class="name">Autosave</h3>
+                        <p class="description">Automatically save the contents of the current file. (Ctrl + S otherwise).</p>
+                    </div>
+                    <div class="option">
+                        <p-inputSwitch [(ngModel)]="settings.editor.autoSave"></p-inputSwitch>
+                    </div>
+                </div>
             </div>
             <div *ngIf="selectedOption == 'Appearance'">
                 <h4>Interface Appearance</h4>

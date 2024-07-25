@@ -10,7 +10,7 @@ export class NavigationService {
   private tabsSubject: BehaviorSubject<NavigationTab[]> = new BehaviorSubject<NavigationTab[]>(this.tabs);
   private activeTabId: number = 0;
   private activeTabIdSubject: BehaviorSubject<number> = new BehaviorSubject<number>(this.activeTabId);
-
+  private activeTabContent: string = '';
   private isElectron = (): boolean => {
     return !!(window && window.electron);
   };
@@ -19,7 +19,7 @@ export class NavigationService {
     return this.tabsSubject.asObservable();
   }
 
-  public getActiveTabId(): Observable<number> {
+  public getActiveTabIdObservable(): Observable<number> {
     return this.activeTabIdSubject.asObservable();
   }
 

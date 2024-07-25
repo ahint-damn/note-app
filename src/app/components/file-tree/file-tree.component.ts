@@ -193,7 +193,6 @@ export class FileTreeComponent implements AfterViewInit, OnInit {
     this.notes.saveNoteByPath(path, '');
     this.notes.resetFileTree();
     this.toasts.show({
-      duration: 3,
       type: 'success',
       message: 'File created',
     });

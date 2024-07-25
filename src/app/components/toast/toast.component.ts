@@ -18,9 +18,6 @@ export class ToastComponent implements OnInit {
   ngOnInit(): void {
     setTimeout(() => {
       this.toastElement.nativeElement.classList.add('fade-out');
-    }, (this.toast.duration - 0.5) * 1000);
-
-      
+    }, 3000);
   }
-
 }

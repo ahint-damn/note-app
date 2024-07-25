@@ -1,4 +1,4 @@
-<div class="app-wrapper dark" *ngIf="!isPopup" #appWrapper>
+<div class="app-wrapper dark" appKeybinds *ngIf="!isPopup" #appWrapper>
   <app-toolbar></app-toolbar>
   <div class="horizontal">
     <app-alert [alert]="alertFromService" *ngIf="showAlert" 

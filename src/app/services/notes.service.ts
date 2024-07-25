@@ -121,7 +121,7 @@ export class NotesService {
         console.log(`[i] Saving note at path: ${path}`);
         window.electron.saveNoteByPath(path, content);
       } catch {
-        this.toasts.show({ title: 'Error', duration: 3, type: 'error', message: 'Error saving/creating file' });
+        this.toasts.show({ title: 'Error', type: 'error', message: 'Error saving/creating file' });
       }
     }
   }
@@ -150,7 +150,7 @@ export class NotesService {
       console.log(`[i] Deleting node at path: ${path}`);
       this.closeTabsRecursively(id);
       window.electron.deleteNodeByPath(path).then(() => {
-        this.toasts.show({ duration: 3, type: 'success', message: 'Item Deleted' });
+        this.toasts.show({ type: 'success', message: 'Item Deleted' });
         this.resetFileTree();
       });
     }

@@ -18,6 +18,7 @@ export interface EditorSettings {
   fontSize: number;
   fontFamily: string;
   stats: boolean;
+  autoSave: boolean;
 }
 
 export interface AppearanceSettings {
