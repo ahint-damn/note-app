@@ -127,3 +127,5 @@ export class NoteComponent implements OnInit, OnDestroy, AfterViewInit {
     this.notesService.saveNoteByPath(this.notesService.getNotePath(this.noteId), this.noteContent);
   }
 }
+
+//TODO: BlockNote Editor Almost Works.
